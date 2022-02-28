@@ -1,35 +1,38 @@
-var config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+let PhaserConfig = {
+    type: Phaser.Auto,
+    parent: "game",
+    width: 1280,
+    height: 720,
     scene: {
-        preload: preload,
-        create: create,
-        update: update
+        init: initScene,
+        preload: preloadScene,
+        create: createScene,
+        update: updateScene
+        
     }
 };
 
-var game = new Phaser.Game(config);
-var background;
+let game = new Phaser.Game(PhaserConfig);
 
-function preload ()
-{
-	//load in images
-	this.load.image('cockroach', 'assets/Cockroach.png');
-	this.load.image('coffee', 'assets/coffee.png');
-	this.load.image('paper', 'assets/Paper.png');
-	this.load.image('bkg1', 'assets/pixilart-drawing.png');
-	this.load.image('bkg2', 'assets/pixil-frame-0.png');
-	this.load.image('bkg3', 'assets/pixil-frame-0 (1).png');
-	this.load.image('rat', 'assets/Cockroach.png');
+var snowman;
+
+function initScene() {}
+
+function preloadScene() {
+    this.load.spritesheet("snowman", "snowman.png", {frameWidth: 300, frameHeight: 300});
 }
 
-function create ()
-{
-	background = this.add.image(400, 300, 'bkg1');
-	background.setScale(2);
+function createScene() {
+    this.anims.create({
+        key: "stand",
+        frameRate: 2,
+        frames: this.anims.generateFrameNumbers("snowman", {start: 0, end: 1}),
+        repeat: 10
+    });
+    
+    snowman = this.add.sprite(640,360, "snowman");
+    snowman.play("stand");
+
 }
 
-function update ()
-{
-}
+function updateScene() {}
