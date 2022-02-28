@@ -15,11 +15,13 @@ let PhaserConfig = {
 let game = new Phaser.Game(PhaserConfig);
 
 var snowman;
+var background;
 
 function initScene() {}
 
 function preloadScene() {
     this.load.spritesheet("snowman", "snowman.png", {frameWidth: 300, frameHeight: 300});
+	this.load.image("background1", "assets/pixilart-drawing.png");
 }
 
 function createScene() {
@@ -32,6 +34,9 @@ function createScene() {
     
     snowman = this.add.sprite(640,360, "snowman");
     snowman.play("stand");
+	
+	background = this.add.image(300, 300, "background1");
+	background.setScale(2);
 
 }
 
