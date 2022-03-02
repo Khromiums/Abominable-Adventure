@@ -14,7 +14,7 @@ var SceneA = new Phaser.Class({
 	    this.load.image("background1", "assets/pixilart-drawing.png");
         this.load.image("coffee", "assets/coffee.png");
 		this.load.image("ground", "assets/ground.png");
-        this.load.image("paper", "assets/paper.png");
+        this.load.image("paper", "assets/Paper.png");
     },
 
     create: function createScene() {
