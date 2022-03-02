@@ -13,13 +13,13 @@ var SceneA = new Phaser.Class({
         this.load.spritesheet("snowman", "snowman.png", {frameWidth: 300, frameHeight: 300});
 	    this.load.image("background1", "assets/pixilart-drawing.png");
         this.load.image("coffee", "assets/coffee.png");
-	//this.load.image("ground", "assets/ground.png");
+		this.load.image("ground", "assets/ground.png");
     },
 
     create: function createScene() {
 	   //background
-	   this.background = this.add.image(400, 300, "background1");
-	   this.background.setScale(2);
+	   this.background = this.add.image(600, 300, "background1");
+	   this.background.setScale(3);
 	
 	//player
     this.anims.create({
@@ -29,8 +29,8 @@ var SceneA = new Phaser.Class({
         repeat: -1
     });
     
-    
-    this.snowman = this.physics.add.sprite(240,500, "snowman");
+    this.snowman = this.physics.add.sprite(140,500, "snowman");
+	//this.snowman.scale.setTo(0.5);
     this.snowman.play("stand");
     this.snowman.health = 0
         
@@ -56,6 +56,10 @@ var SceneA = new Phaser.Class({
     });
 	
 	this.cursors = this.input.keyboard.createCursorKeys();
+		
+	//platforms
+	platforms = this.physics.add.staticGroup();
+	platforms.create(200, 670, 'ground').refreshBody();
 	
 	
 },
@@ -89,8 +93,8 @@ var SceneA = new Phaser.Class({
 let PhaserConfig = {
     type: Phaser.Auto,
     //parent: "game",
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 720,
 	physics: {
         default: 'arcade',
         arcade: {
