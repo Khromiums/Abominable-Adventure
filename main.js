@@ -1,3 +1,77 @@
+var SceneA = new Phaser.Class({
+
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function SceneA ()
+    {
+        Phaser.Scene.call(this, { key: 'sceneA' });
+    },
+
+    preload: function preloadScene() {
+        this.load.spritesheet("snowman", "snowman.png", {frameWidth: 300, frameHeight: 300});
+	    this.load.image("background1", "assets/pixilart-drawing.png");
+        this.load.image("coffee", "assets/coffee.png");
+	//this.load.image("ground", "assets/ground.png");
+    },
+
+    create: function createScene() {
+	   //background
+	   this.background = this.add.image(400, 300, "background1");
+	   this.background.setScale(2);
+	
+	//player
+    this.anims.create({
+        key: "stand",
+        frameRate: 2,
+        frames: this.anims.generateFrameNumbers("snowman", {start: 0, end: 1}),
+        repeat: 10
+    });
+    
+    
+    this.snowman = this.physics.add.sprite(240,500, "snowman");
+    this.snowman.play("stand");
+	
+	//player = this.physics.add.sprite(100, 450, 'dude');
+
+	this.snowman.setBounce(0.2);
+	this.snowman.setCollideWorldBounds(true);
+	
+	this.cursors = this.input.keyboard.createCursorKeys();
+	
+	//platform
+	//platforms = this.physics.add.staticGroup();
+	//platforms.create(400, 300, 'ground').setScale(2).refreshBody();
+	
+},
+    update: function updateScene() {
+	if (this.cursors.left.isDown)
+	{
+		this.snowman.setVelocityX(-160);
+
+	}
+	else if (this.cursors.right.isDown)
+	{
+		this.snowman.setVelocityX(160);
+
+	}
+	else
+	{
+		this.snowman.setVelocityX(0);
+
+	}
+
+	if (this.cursors.up.isDown && this.snowman.body.touching.down)
+	{
+		this.snowman.setVelocityY(-330);
+	}
+}
+});
+
+
+//this.scene.start('sceneA');
+
 let PhaserConfig = {
     type: Phaser.Auto,
     //parent: "game",
@@ -10,17 +84,11 @@ let PhaserConfig = {
             debug: false
         }
     },
-    scene: {
-        init: initScene,
-        preload: preloadScene,
-        create: createScene,
-        update: updateScene
-    }
+    scene: [SceneA]
 };
 
 let game = new Phaser.Game(PhaserConfig);
 
-//new Text(PhaserConfig, 0, 0, "Snowman health is 10", '16px')
 var snowman;
 var background;
 var platforms;
@@ -31,7 +99,6 @@ function initScene() {}
 function preloadScene() {
     this.load.spritesheet("snowman", "snowman.png", {frameWidth: 300, frameHeight: 300});
 	this.load.image("background1", "assets/pixilart-drawing.png");
-    this.load.image("coffee", "assets/coffee.png");
 	//this.load.image("ground", "assets/ground.png");
 }
 
@@ -79,6 +146,7 @@ function createScene() {
 	//platforms = this.physics.add.staticGroup();
 	//platforms.create(400, 300, 'ground').setScale(2).refreshBody();
 	
+	
 }
 
 function updateScene() {
@@ -102,5 +170,4 @@ function updateScene() {
 	{
 		snowman.setVelocityY(-330);
 	}
-    
 }
