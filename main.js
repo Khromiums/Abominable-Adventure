@@ -14,6 +14,7 @@ var SceneA = new Phaser.Class({
 	    this.load.image("background1", "assets/pixilart-drawing.png");
         this.load.image("coffee", "assets/coffee.png");
 		this.load.image("ground", "assets/ground.png");
+        this.load.image("paper", "assets/paper.png");
     },
 
     create: function createScene() {
@@ -33,8 +34,9 @@ var SceneA = new Phaser.Class({
 	//this.snowman.scale.setTo(0.5);
     this.snowman.play("stand");
     this.snowman.health = 0
+    this.snowman.score = 0
         
-    this.coffee = this.physics.add.staticSprite(640,500,"coffee");
+    this.coffee = this.physics.add.staticSprite(440,630,"coffee");
     this.coffee.setScale(3);
     this.coffee.allowGravity = false
         
@@ -47,14 +49,28 @@ var SceneA = new Phaser.Class({
     this.physics.add.collider(this.snowman, this.coffee, function (snowman, coffee) {
         snowman.health += 10
         coffee.destroy()
-        console.log(snowman.health)
         collisionText.visible = true
         setTimeout(textGone, 2000);
         function textGone () {
             collisionText.visible = false
         }
     });
+        
+    this.paper = this.physics.add.staticSprite(750,630,"paper");
+    this.paper.setScale(3);
+    this.paper.allowGravity = false
+    paperCollisionText = this.add.text(23,23,"Score increased by 10", {fontSize: '32px', fill: '#000'});
+    paperCollisionText.visible = false
 	
+    this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
+        snowman.score += 10
+        paper.destroy()
+        paperCollisionText.visible = true
+        setTimeout(textGone1, 2000);
+        function textGone1 () {
+            paperCollisionText.visible = false
+        }
+    });
 	this.cursors = this.input.keyboard.createCursorKeys();
 		
 	//platforms
