@@ -21,6 +21,8 @@ var SceneA = new Phaser.Class({
 	   //background
 	   this.background = this.add.image(600, 300, "background1");
 	   this.background.setScale(3);
+       scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
+       healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
 	
 	//player
     this.anims.create({
@@ -33,14 +35,14 @@ var SceneA = new Phaser.Class({
     this.snowman = this.physics.add.sprite(140,500, "snowman");
 	//this.snowman.scale.setTo(0.5);
     this.snowman.play("stand");
-    this.snowman.health = 0
+    this.snowman.health = 50
     this.snowman.score = 0
         
     this.coffee = this.physics.add.staticSprite(440,630,"coffee");
     this.coffee.setScale(3);
     this.coffee.allowGravity = false
         
-    collisionText = this.add.text(23,23,"Snowman health increased by 10", {fontSize: '32px', fill: '#000'})
+    collisionText = this.add.text(300,23,"Snowman health increased by 10", {fontSize: '32px', fill: '#000'})
     collisionText.visible = false
 
 	this.snowman.setBounce(0.2);
@@ -48,6 +50,7 @@ var SceneA = new Phaser.Class({
         
     this.physics.add.collider(this.snowman, this.coffee, function (snowman, coffee) {
         snowman.health += 10
+        healthText.setText('Health: ' + snowman.health + '%');
         coffee.destroy()
         collisionText.visible = true
         setTimeout(textGone, 2000);
@@ -59,11 +62,12 @@ var SceneA = new Phaser.Class({
     this.paper = this.physics.add.staticSprite(750,630,"paper");
     this.paper.setScale(3);
     this.paper.allowGravity = false
-    paperCollisionText = this.add.text(23,23,"Score increased by 10", {fontSize: '32px', fill: '#000'});
+    paperCollisionText = this.add.text(300,23,"Score increased by 10", {fontSize: '32px', fill: '#000'});
     paperCollisionText.visible = false
 	
     this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
         snowman.score += 10
+        scoreText.setText('Score: ' + snowman.score);
         paper.destroy()
         paperCollisionText.visible = true
         setTimeout(textGone1, 2000);
