@@ -41,39 +41,25 @@ var SceneA = new Phaser.Class({
     this.coffee = this.physics.add.staticSprite(440,630,"coffee");
     this.coffee.setScale(3);
     this.coffee.allowGravity = false
-        
-    collisionText = this.add.text(300,23,"Snowman health increased by 10", {fontSize: '32px', fill: '#000'})
-    collisionText.visible = false
 
 	this.snowman.setBounce(0.2);
 	this.snowman.setCollideWorldBounds(true);
         
     this.physics.add.collider(this.snowman, this.coffee, function (snowman, coffee) {
-        snowman.health += 10
+        snowman.health += 5
         healthText.setText('Health: ' + snowman.health + '%');
         coffee.destroy()
-        collisionText.visible = true
-        setTimeout(textGone, 2000);
-        function textGone () {
-            collisionText.visible = false
-        }
+
     });
         
     this.paper = this.physics.add.staticSprite(750,630,"paper");
     this.paper.setScale(3);
     this.paper.allowGravity = false
-    paperCollisionText = this.add.text(300,23,"Score increased by 10", {fontSize: '32px', fill: '#000'});
-    paperCollisionText.visible = false
 	
     this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
-        snowman.score += 10
+        snowman.score += 5
         scoreText.setText('Score: ' + snowman.score);
         paper.destroy()
-        paperCollisionText.visible = true
-        setTimeout(textGone1, 2000);
-        function textGone1 () {
-            paperCollisionText.visible = false
-        }
     });
 	this.cursors = this.input.keyboard.createCursorKeys();
 		
