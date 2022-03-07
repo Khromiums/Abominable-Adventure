@@ -107,34 +107,32 @@ var SceneA = new Phaser.Class({
 }
 });
 
-
-//this.scene.start('sceneA');
-
 var tutorial_scene = new Phaser.Class({
 
     Extends: Phaser.Scene,
 
     initialize:
 
-    function SceneA ()
+    function SceneTutorial ()
     {
         Phaser.Scene.call(this, { key: 'tutorial_scene' });
     },
     
     preload: function preloadScene () {
         this.load.image('tutorial', 'assets/tutorial.png');
+        
     },
     create: function createScene () {
         this.background = this.add.image(600, 300, "tutorial");
 	    this.background.setScale(2.3);  
+        instructionText = this.add.text(110, 620, 'Press Enter to start', { fontSize: '80px', fill: '#000000' });
 	    this.cursors = this.input.keyboard.createCursorKeys();
+        this.input.keyboard.once('keydown-ENTER', function () {
+            this.scene.start('sceneA');
+        }, this);
 
     },
-    update: function updateScene () {
-        //if (this.cursors.enter.isDown) {
-           // this.scene.start('sceneA');
-       // }
-    }
+
     
 });
 
