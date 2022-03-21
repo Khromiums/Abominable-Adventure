@@ -17,22 +17,30 @@ var SceneA = new Phaser.Class({
         this.load.image("paper", "assets/Paper.png");
         this.load.image("roach", "assets/roach.png");
         this.load.image("rat","assets/rat1.png");
+		this.load.image("deathground", "assets/deathground.png");
     },
 
     create: function createScene() {
 		
         //background
         //combined background ranges from 1800 to -600
-        this.background = this.add.image(1800, 300, "background1");
+        this.background = this.add.image(1800, 400, "background1");
         this.background.setScale(3);
         scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
         healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
-
+		
         //platforms
         platforms = this.physics.add.staticGroup();
         platforms.create(200, 670, 'ground').refreshBody();
         platforms.create(900, 670, 'ground');
-        platforms.create (400, 400, 'ground');
+        platforms.create (500, 400, 'ground');
+		platforms.create (1100, 550, 'ground');
+		platforms.create (900, 300, 'ground');
+		platforms.create (1500, 400, 'ground');
+		
+		//deathground
+		deathground = this.physics.add.staticGroup();
+		deathground.create(0, 700, '')
 
         //player
         this.anims.create({
@@ -88,9 +96,11 @@ var SceneA = new Phaser.Class({
             paper.destroy()
         });
             this.cursors = this.input.keyboard.createCursorKeys();
-            this.physics.add.collider(this.snowman, platforms);
-            this.cameras.main.setBounds(0,0,this.background.displayWidth,this.background.displayHeight)
-            this.cameras.main.startFollow(this.snowman)
+        this.physics.add.collider(this.snowman, platforms);
+        this.cameras.main.setBounds(0,0,this.background.displayWidth,this.background.displayHeight)
+        this.cameras.main.startFollow(this.snowman)
+		
+		
 
 	
 },
@@ -177,5 +187,6 @@ var snowman;
 var background;
 var platforms;
 var cursors;
+var deathground;
 
 function initScene() {}
