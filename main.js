@@ -15,6 +15,8 @@ var SceneA = new Phaser.Class({
         this.load.image("coffee", "assets/coffee.png");
 		this.load.image("ground", "assets/ground.png");
         this.load.image("paper", "assets/Paper.png");
+        this.load.image("roach", "assets/roach.png");
+        this.load.image("rat","assets/rat1.png");
     },
 
     create: function createScene() {
@@ -41,7 +43,23 @@ var SceneA = new Phaser.Class({
     this.coffee = this.physics.add.staticSprite(440,630,"coffee");
     this.coffee.setScale(3);
     this.coffee.allowGravity = false
-
+        
+    this.roach = this.physics.add.staticSprite(1000, 630, "roach");
+    this.roach.setScale(2)
+    this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
+        snowman.health -= 5
+        healthText.setText('Health: ' + snowman.health + '%');
+        roach.destroy()
+    });
+        
+    this.rat = this.physics.add.staticSprite(1100, 630, "rat");
+    //this.roach.setScale(2)
+    this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
+        snowman.health -= 10
+        healthText.setText('Health: ' + snowman.health + '%');
+        rat.destroy()
+    });
+    
 	this.snowman.setBounce(0.2);
 	this.snowman.setCollideWorldBounds(true);
         
