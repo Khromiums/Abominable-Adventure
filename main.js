@@ -20,11 +20,18 @@ var SceneA = new Phaser.Class({
     },
 
     create: function createScene() {
+		
 	   //background
 	   this.background = this.add.image(600, 300, "background1");
 	   this.background.setScale(3);
        scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
        healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
+		
+		//platforms
+	platforms = this.physics.add.staticGroup();
+	platforms.create(200, 670, 'ground').refreshBody();
+	platforms.create(900, 670, 'ground');
+	platforms.create (400, 400, 'ground');
 	
 	//player
     this.anims.create({
@@ -72,7 +79,7 @@ var SceneA = new Phaser.Class({
         
     this.paper = this.physics.add.staticSprite(750,630,"paper");
     this.paper.setScale(3);
-    this.paper.allowGravity = false
+    this.paper.allowGravity = true
 	
     this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
         snowman.score += 5
@@ -81,9 +88,7 @@ var SceneA = new Phaser.Class({
     });
 	this.cursors = this.input.keyboard.createCursorKeys();
 		
-	//platforms
-	platforms = this.physics.add.staticGroup();
-	platforms.create(200, 670, 'ground').refreshBody();
+	this.physics.add.collider(player, platforms);
 	
 	
 },
@@ -97,6 +102,10 @@ var SceneA = new Phaser.Class({
 	{
 		this.snowman.setVelocityX(160);
 
+	}
+	else if (this.cursors.up.isDown)
+	{
+		this.snowman.setVelocityY(-100);
 	}
 	else
 	{
