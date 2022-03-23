@@ -28,6 +28,8 @@ var SceneA = new Phaser.Class({
         this.background.setScale(3);
         scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
         healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
+        scoreText.setScrollFactor(0)
+        healthText.setScrollFactor(0)
 		
         //platforms
         platforms = this.physics.add.staticGroup();
@@ -97,8 +99,12 @@ var SceneA = new Phaser.Class({
         });
             this.cursors = this.input.keyboard.createCursorKeys();
         this.physics.add.collider(this.snowman, platforms);
+    //camera
         this.cameras.main.setBounds(0,0,this.background.displayWidth,this.background.displayHeight)
         this.cameras.main.startFollow(this.snowman)
+        
+        
+        
 		
 		
 
@@ -177,8 +183,7 @@ let PhaserConfig = {
             debug: false
         }
     },
-    scene: [SceneA, tutorial_scene]
-    //scene: [tutorial_scene, SceneA]
+    scene: [tutorial_scene, SceneA]
 };
 
 let game = new Phaser.Game(PhaserConfig);
