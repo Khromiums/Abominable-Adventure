@@ -57,6 +57,8 @@ var SceneA = new Phaser.Class({
         this.snowman.play("stand");
         this.snowman.health = 50
         this.snowman.score = 0
+        //this.snowman.body.setSize(37, 0, -10, 0);
+        //Second number is good
 
         this.coffee = this.physics.add.staticSprite(440,630,"coffee");
         this.coffee.setScale(3);
@@ -79,7 +81,7 @@ var SceneA = new Phaser.Class({
         });
 
         this.snowman.setBounce(0.2);
-        this.snowman.setCollideWorldBounds(true);
+        this.snowman.setCollideWorldBounds(false);
 
         this.physics.add.collider(this.snowman, this.coffee, function (snowman, coffee) {
             snowman.health += 5
@@ -120,19 +122,16 @@ var SceneA = new Phaser.Class({
 		this.snowman.setVelocityX(160);
 
 	}
-	else if (this.cursors.up.isDown)
+	else if (this.cursors.up.isDown  && this.snowman.body.touching.down)
 	{
-		this.snowman.setVelocityY(-100);
+		this.snowman.setVelocityY(-430);
 	}
 	else
 	{
 		this.snowman.setVelocityX(0);
 
 	}
-	if (this.cursors.up.isDown && this.snowman.body.touching.down)
-	{
-		this.snowman.setVelocityY(-330);
-	}
+
         
         
     
