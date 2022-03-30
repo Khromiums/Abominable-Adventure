@@ -10,22 +10,21 @@ var SceneA = new Phaser.Class({
     },
 
     preload: function preloadScene() {
-        this.load.spritesheet("snowman", "assets/snowman2.png", {frameWidth: 65, frameHeight: 40});
+        this.load.spritesheet("snowman", "assets/snowman2.png", {frameWidth: 65, frameHeight: 43});
 	    this.load.image("background1", "assets/combined.png");
         this.load.image("coffee", "assets/coffee.png");
 		this.load.image("ground", "assets/ground.png");
         this.load.image("paper", "assets/Paper.png");
         this.load.image("roach", "assets/roach.png");
         this.load.image("rat","assets/rat1.png");
-		this.load.image("deathground", "assets/deathground.png");
     },
 
     create: function createScene() {
 		
         //background
         //combined background ranges from 1800 to -600
-        this.background = this.add.image(1800, 400, "background1");
-        this.background.setScale(3);
+        this.background = this.add.image(1800, 500, "background1");
+        this.background.setScale(3.5);
         scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
         healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
         scoreText.setScrollFactor(0)
@@ -40,10 +39,6 @@ var SceneA = new Phaser.Class({
 		platforms.create (900, 300, 'ground');
 		platforms.create (1500, 400, 'ground');
 		
-		//deathground
-		deathground = this.physics.add.staticGroup();
-		deathground.create(0, 700, '')
-
         //player
         this.anims.create({
             key: "stand",
@@ -63,7 +58,8 @@ var SceneA = new Phaser.Class({
         this.coffee = this.physics.add.staticSprite(440,630,"coffee");
         this.coffee.setScale(3);
         this.coffee.allowGravity = false
-
+		
+		//roach
         this.roach = this.physics.add.staticSprite(1000, 630, "roach");
         this.roach.setScale(1)
         this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
@@ -106,13 +102,17 @@ var SceneA = new Phaser.Class({
         this.cameras.main.startFollow(this.snowman)
         
         
-        
-		
-		
-
 	
 },
     update: function updateScene() {
+	if (this.snowman.health == 0)
+	{
+		this.scene.start('gameOver_scene');
+	}
+	else if (this.snowman.y > 900)
+	{
+		this.scene.start('gameOver_scene');
+	}
 	if (this.cursors.left.isDown)
 	{
 		this.snowman.setVelocityX(-160);
@@ -132,10 +132,32 @@ var SceneA = new Phaser.Class({
 
 	}
 
-        
-        
-    
-        
+    //roach movement
+	roachmaxX = 1200;
+	roachminX = 800;
+	roachleft = true;
+	roachright = false;
+		
+	while (roachleft == true) {
+		if (this.roach.x > roachminX){
+			this.roach.x -= 1;
+		}
+		if (this.roach.x == roachminX){
+			roachleft = false;
+			roachright = true;
+		}
+	}
+	while (roachright == true) {
+		if (this.roach.x < roachmaxX){
+			this.roach.x -= 1;
+		}
+		if (this.roach.x == roachmaxX){
+			roachleft = true;
+			roachright = false;
+		}
+	}
+	
+	        
 }
 });
 
@@ -168,6 +190,35 @@ var tutorial_scene = new Phaser.Class({
     
 });
 
+var gameOver_scene = new Phaser.Class({
+
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function GameOver ()
+    {
+        Phaser.Scene.call(this, { key: 'gameOver_scene' });
+    },
+    
+    preload: function preloadScene () {
+        this.load.image('gameOverimg', 'assets/gameover.png');
+        
+    },
+    create: function createScene () {
+        this.background = this.add.image(600, 300, "gameOverimg");
+	    this.background.setScale(2.3);  
+	    this.cursors = this.input.keyboard.createCursorKeys();
+        this.input.keyboard.once('keydown-ENTER', function () {
+            this.scene.start('sceneA');
+        }, this);
+
+    },
+
+    
+});
+
+
 
 
 let PhaserConfig = {
@@ -182,7 +233,7 @@ let PhaserConfig = {
             debug: false
         }
     },
-    scene: [tutorial_scene, SceneA]
+    scene: [tutorial_scene, SceneA, gameOver_scene]
 };
 
 let game = new Phaser.Game(PhaserConfig);
@@ -191,6 +242,7 @@ var snowman;
 var background;
 var platforms;
 var cursors;
-var deathground;
+var gameover = false;
+
 
 function initScene() {}
