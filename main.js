@@ -207,7 +207,6 @@ var tutorial_scene = new Phaser.Class({
     },
     create: function createScene () {
         this.background = this.add.image(600, 300, "tutorial");
-	    this.background.setScale(2.3);  
         instructionText = this.add.text(110, 620, 'Press Enter to start', { fontSize: '80px', fill: '#000000' });
 	    this.cursors = this.input.keyboard.createCursorKeys();
         this.input.keyboard.once('keydown-ENTER', function () {
@@ -236,7 +235,6 @@ var gameOver_scene = new Phaser.Class({
     },
     create: function createScene () {
         this.background = this.add.image(600, 300, "gameOverimg");
-	    this.background.setScale(2.3);  
 	    this.cursors = this.input.keyboard.createCursorKeys();
         this.input.keyboard.once('keydown-ENTER', function () {
             this.scene.start('sceneA');
