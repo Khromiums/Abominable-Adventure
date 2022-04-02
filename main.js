@@ -26,8 +26,8 @@ var SceneA = new Phaser.Class({
 		
         //background
         //combined background ranges from 1800 to -600
-        this.background = this.add.image(1800, 500, "background1");
-        this.background.setScale(3.5);
+        this.background = this.add.image(3700, 300, "background1");
+        //this.background.setScale(3.5);
         scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
         healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
         scoreText.setScrollFactor(0)
