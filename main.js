@@ -250,6 +250,35 @@ var gameOver_scene = new Phaser.Class({
     
 });
 
+var title_scene = new Phaser.Class({
+
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function TitleScene ()
+    {
+        Phaser.Scene.call(this, { key: 'title_scene' });
+    },
+    
+    preload: function preloadScene () {
+        this.load.image('title', 'assets/start screen.png');
+        
+    },
+    create: function createScene () {
+        this.background = this.add.image(600, 300, "title");
+	    this.cursors = this.input.keyboard.createCursorKeys();
+        this.input.keyboard.once('keydown-ENTER', function () {
+            this.scene.start('tutorial_scene');
+        }, this);
+
+    },
+	update: function updateScene () {
+		this.sound.stopAll();
+	}
+
+    
+});
 
 
 
@@ -257,7 +286,7 @@ let PhaserConfig = {
     type: Phaser.Auto,
     //parent: "game",
     width: 1200,
-    height: 720,
+    height: 620,
 	physics: {
         default: 'arcade',
         arcade: {
@@ -266,7 +295,7 @@ let PhaserConfig = {
         }
     },
 	resolution: 3,
-    scene: [tutorial_scene, SceneA, gameOver_scene]
+    scene: [title_scene, tutorial_scene, SceneA, gameOver_scene]
 };
 
 let game = new Phaser.Game(PhaserConfig);
