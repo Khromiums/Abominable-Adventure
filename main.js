@@ -17,6 +17,9 @@ var SceneA = new Phaser.Class({
         this.load.image("paper", "assets/Paper.png");
         this.load.image("roach", "assets/roach.png");
         this.load.image("rat","assets/rat1.png");
+		
+		//background music
+		this.load.audio('level1', "assets/level1dogpark.mp3");
     },
 
     create: function createScene() {
@@ -29,6 +32,10 @@ var SceneA = new Phaser.Class({
         healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
         scoreText.setScrollFactor(0)
         healthText.setScrollFactor(0)
+		
+		
+		//music
+		music = this.sound.play('level1');
 		
         //platforms
         platforms = this.physics.add.staticGroup();
@@ -236,6 +243,9 @@ var gameOver_scene = new Phaser.Class({
         }, this);
 
     },
+	update: function updateScene () {
+		this.sound.stopAll();
+	}
 
     
 });
@@ -255,6 +265,7 @@ let PhaserConfig = {
             debug: false
         }
     },
+	resolution: 3,
     scene: [tutorial_scene, SceneA, gameOver_scene]
 };
 
@@ -267,6 +278,7 @@ var cursors;
 var gameover = false;
 var rmove = false;
 var ramove = false;
+var music;
 
 
 function initScene() {}
