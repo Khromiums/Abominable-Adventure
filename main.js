@@ -60,7 +60,7 @@ var SceneA = new Phaser.Class({
         this.coffee.allowGravity = false
 		
 		//roach
-        this.roach = this.physics.add.staticSprite(1000, 630, "roach");
+        roach = this.roach = this.physics.add.staticSprite(950, 645, "roach");
         this.roach.setScale(1)
         this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
             snowman.health -= 5
@@ -68,7 +68,7 @@ var SceneA = new Phaser.Class({
             roach.destroy()
         });
 
-        this.rat = this.physics.add.staticSprite(1100, 630, "rat");
+        this.rat = this.physics.add.staticSprite(300, 360, "rat");
         //this.roach.setScale(2)
         this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
             snowman.health -= 10
@@ -131,32 +131,54 @@ var SceneA = new Phaser.Class({
 		this.snowman.setVelocityX(0);
 
 	}
-
-    //roach movement
-	roachmaxX = 1200;
-	roachminX = 800;
-	roachleft = true;
-	roachright = false;
 		
-	while (roachleft == true) {
-		if (this.roach.x > roachminX){
+	//enemy movement
+	//true, move left, false, move right
+	//roach
+	if (rmove == true) {
+		this.roach.flipX = false;
+		if (this.roach.x < 950) {
+			this.roach.x += 1;
+		}
+		else {
+			rmove = false;
+		}
+		
+	}
+	else if (rmove == false) {
+		this.roach.flipX = true;
+		if (this.roach.x > 850) {
 			this.roach.x -= 1;
 		}
-		if (this.roach.x == roachminX){
-			roachleft = false;
-			roachright = true;
+		else {
+			rmove = true;
+			
 		}
 	}
-	while (roachright == true) {
-		if (this.roach.x < roachmaxX){
-			this.roach.x -= 1;
-		}
-		if (this.roach.x == roachmaxX){
-			roachleft = true;
-			roachright = false;
-		}
-	}
+		
 	
+	//rat
+	if (ramove == true) {
+		this.rat.flipX = false;
+		if (this.rat.x < 600) {
+			this.rat.x += 1;
+		}
+		else {
+			ramove = false;
+		}
+		
+	}
+	else if (ramove == false) {
+		this.rat.flipX = true;
+		if (this.rat.x > 300) {
+			this.rat.x -= 1;
+		}
+		else {
+			ramove = true;
+			
+		}
+	}
+		
 	        
 }
 });
@@ -243,6 +265,8 @@ var background;
 var platforms;
 var cursors;
 var gameover = false;
+var rmove = false;
+var ramove = false;
 
 
 function initScene() {}
