@@ -17,6 +17,8 @@ var SceneA = new Phaser.Class({
         this.load.image("paper", "assets/Paper.png");
         this.load.image("roach", "assets/roach.png");
         this.load.image("rat","assets/rat1.png");
+        this.load.audio("rat_noise","assets/rat_noise.mp3");
+        this.load.audio("roach_noise", "assets/roach_sound.mp3");
 		
 		//background music
 		this.load.audio('level1', "assets/level1dogpark.mp3");
@@ -33,7 +35,8 @@ var SceneA = new Phaser.Class({
         scoreText.setScrollFactor(0)
         healthText.setScrollFactor(0)
 		
-		
+		rat_noise = this.sound.add("rat_noise", {loop: false});
+        roach_sound = this.sound.add("roach_noise", {loop: false});
 		//music
 		music = this.sound.play('level1');
 		
@@ -72,6 +75,7 @@ var SceneA = new Phaser.Class({
         this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
             snowman.health -= 5
             healthText.setText('Health: ' + snowman.health + '%');
+            roach_sound.play();
             roach.destroy()
         });
 
@@ -79,6 +83,7 @@ var SceneA = new Phaser.Class({
         //this.roach.setScale(2)
         this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
             snowman.health -= 10
+            rat_noise.play();
             healthText.setText('Health: ' + snowman.health + '%');
             rat.destroy()
         });
