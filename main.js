@@ -19,7 +19,8 @@ var SceneA = new Phaser.Class({
         this.load.image("rat","assets/rat1.png");
         this.load.audio("rat_noise","assets/rat_noise.mp3");
         this.load.audio("roach_noise", "assets/roach_sound.mp3");
-		
+		this.load.audio("sip","assets/sip.mp3");
+        this.load.audio("paper","assets/paper.mp3");
 		//background music
 		this.load.audio('level1', "assets/level1dogpark.mp3");
     },
@@ -37,6 +38,8 @@ var SceneA = new Phaser.Class({
 		
 		rat_noise = this.sound.add("rat_noise", {loop: false});
         roach_sound = this.sound.add("roach_noise", {loop: false});
+        sip = this.sound.add("sip", {loop: false});
+        paper_sound = this.sound.add("paper", {loop: false});
 		//music
 		music = this.sound.play('level1');
 		
@@ -93,6 +96,7 @@ var SceneA = new Phaser.Class({
 
         this.physics.add.collider(this.snowman, this.coffee, function (snowman, coffee) {
             snowman.health += 5
+            sip.play();
             healthText.setText('Health: ' + snowman.health + '%');
             coffee.destroy()
 
@@ -104,6 +108,7 @@ var SceneA = new Phaser.Class({
 
         this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
             snowman.score += 5
+            paper_sound.play();
             scoreText.setText('Score: ' + snowman.score);
             paper.destroy()
         });
