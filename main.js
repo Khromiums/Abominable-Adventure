@@ -27,6 +27,7 @@ var SceneA = new Phaser.Class({
     },
 
     create: function createScene() {
+       
 		
         //background
         //combined background ranges from 1800 to -600
@@ -51,10 +52,10 @@ var SceneA = new Phaser.Class({
         platforms.create (500, 400, 'ground');
 		platforms.create (1100, 550, 'ground');
 		platforms.create (900, 300, 'ground');
-		platforms.create (1500, 400, 'ground');
+		//platforms.create (1500, 400, 'ground');
         platforms.create (1600, 400, 'ground');
-        platforms.create (1500, 400, 'ground');
         platforms.create (2000, 700, 'ground');
+        //platforms.create (2200, 500, 'ground').setScale(2).refreshBody();
 		
         //player
         this.anims.create({
@@ -65,12 +66,13 @@ var SceneA = new Phaser.Class({
         });
 
         this.snowman = this.physics.add.sprite(140,500, "snowman");
-        this.snowman.setScale(1);
+        this.snowman.setScale(1.5).refreshBody();
         this.snowman.play("stand");
-        this.snowman.health = 50
-        this.snowman.score = 0
-        //this.snowman.body.setSize(37, 0, -10, 0);
-        //Second number is good
+        this.snowman.health = 50;
+        this.snowman.score = 0;
+        this.snowman.body.setSize(30, 40, 6000, -6000);
+        //The third and fourth number don't seem to do anything
+        
 
         this.coffee = this.physics.add.staticSprite(550,650,"coffee");
         this.coffee.setScale(3);
@@ -79,6 +81,11 @@ var SceneA = new Phaser.Class({
         this.portal = this.physics.add.staticSprite(2500,630,"portal");
         this.portal.setScale(3);
         this.portal.allowGravity = false
+        
+        const abcd = this;
+        this.physics.add.collider(this.snowman, this.portal, function (snowman, portal) {           
+            abcd.scene.start('SceneB');
+        });
 		
 		//roach
         roach = this.roach = this.physics.add.staticSprite(950, 645, "roach");
@@ -109,17 +116,6 @@ var SceneA = new Phaser.Class({
             coffee.destroy()
 
         });
-        
-        this.physics.add.collider(this.snowman, this.portal, function (snowman, portal) {
-            
-            //snowman.health += 5
-            //sip.play();
-            //healthText.setText('Health: ' + snowman.health + '%');
-            portal.destroy()
-            this.scene.start('SceneB');
-
-
-        });
 
         this.paper = this.physics.add.staticSprite(750,630,"paper");
         this.paper.setScale(3);
@@ -132,19 +128,11 @@ var SceneA = new Phaser.Class({
             paper.destroy()
         });
         
-        
-
-        
-        
-        
-        
-            this.cursors = this.input.keyboard.createCursorKeys();
+        this.cursors = this.input.keyboard.createCursorKeys();
         this.physics.add.collider(this.snowman, platforms);
     //camera
         this.cameras.main.setBounds(0,0,this.background.displayWidth,this.background.displayHeight)
-        this.cameras.main.startFollow(this.snowman)
-        
-        
+        this.cameras.main.startFollow(this.snowman)      
 	
 },
     update: function updateScene() {
@@ -157,23 +145,27 @@ var SceneA = new Phaser.Class({
 		this.scene.start('gameOver_scene');
 	}
 	if (this.cursors.left.isDown)
-	{
-		this.snowman.setVelocityX(-160);
-	}
-	else if (this.cursors.right.isDown)
-	{
-		this.snowman.setVelocityX(160);
+    {
+        this.snowman.setVelocityX(-160);
 
-	}
-	else if (this.cursors.up.isDown  && this.snowman.body.touching.down)
-	{
-		this.snowman.setVelocityY(-430);
-	}
-	else
-	{
-		this.snowman.setVelocityX(0);
+        this.snowman.anims.play('left', true);
+    }
+    else if (this.cursors.right.isDown)
+    {
+        this.snowman.setVelocityX(160);
 
-	}
+        this.snowman.anims.play('right', true);
+    }
+    else
+    {
+        this.snowman.setVelocityX(0);
+
+    }
+
+    if (this.cursors.up.isDown && this.snowman.body.touching.down)
+    {
+        this.snowman.setVelocityY(-330);
+    }
 		
 	//enemy movement
 	//true, move left, false, move right
@@ -241,7 +233,7 @@ var SceneB = new Phaser.Class({
 
     preload: function preloadScene() {
         this.load.spritesheet("snowman", "assets/snowman2.png", {frameWidth: 65, frameHeight: 43});
-	    this.load.image("background1", "assets/citycombined.png");
+	    this.load.image("background2", "assets/citycombined.png");
         this.load.image("coffee", "assets/coffee.png");
 		this.load.image("ground", "assets/ground.png");
         this.load.image("paper", "assets/Paper.png");
@@ -257,10 +249,11 @@ var SceneB = new Phaser.Class({
     },
 
     create: function createScene() {
+       
 		
         //background
         //combined background ranges from 1800 to -600
-        this.background = this.add.image(3700, 300, "background1");
+        this.background = this.add.image(3700, 300, "background2");
         //this.background.setScale(3.5);
         scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
         healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
@@ -281,10 +274,6 @@ var SceneB = new Phaser.Class({
         platforms.create (500, 400, 'ground');
 		platforms.create (1100, 550, 'ground');
 		platforms.create (900, 300, 'ground');
-		platforms.create (1500, 400, 'ground');
-        platforms.create (1600, 400, 'ground');
-        platforms.create (1500, 400, 'ground');
-        platforms.create (2000, 700, 'ground');
 		
         //player
         this.anims.create({
@@ -295,16 +284,26 @@ var SceneB = new Phaser.Class({
         });
 
         this.snowman = this.physics.add.sprite(140,500, "snowman");
-        this.snowman.setScale(1);
+        this.snowman.setScale(1.5).refreshBody();
         this.snowman.play("stand");
-        this.snowman.health = 50
-        this.snowman.score = 0
-        //this.snowman.body.setSize(37, 0, -10, 0);
-        //Second number is good
+        this.snowman.health = 50;
+        this.snowman.score = 0;
+        this.snowman.body.setSize(30, 40, 6000, -6000);
+        //The third and fourth number don't seem to do anything
+        
 
         this.coffee = this.physics.add.staticSprite(550,650,"coffee");
         this.coffee.setScale(3);
         this.coffee.allowGravity = false
+        
+        this.portal = this.physics.add.staticSprite(2500,630,"portal");
+        this.portal.setScale(3);
+        this.portal.allowGravity = false
+        
+        const abcd = this;
+        this.physics.add.collider(this.snowman, this.portal, function (snowman, portal) {           
+            abcd.scene.start('SceneB');
+        });
 		
 		//roach
         roach = this.roach = this.physics.add.staticSprite(950, 645, "roach");
@@ -335,11 +334,10 @@ var SceneB = new Phaser.Class({
             coffee.destroy()
 
         });
-        
-        
+
 
         this.paper = this.physics.add.staticSprite(750,630,"paper");
-        this.paper.setScale(3);
+        this.paper.setScale(3).refreshBody();
         this.paper.allowGravity = true
 
         this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
@@ -348,6 +346,10 @@ var SceneB = new Phaser.Class({
             scoreText.setText('Score: ' + snowman.score);
             paper.destroy()
         });
+        
+        
+
+        
         
         
         
@@ -370,23 +372,27 @@ var SceneB = new Phaser.Class({
 		this.scene.start('gameOver_scene');
 	}
 	if (this.cursors.left.isDown)
-	{
-		this.snowman.setVelocityX(-160);
-	}
-	else if (this.cursors.right.isDown)
-	{
-		this.snowman.setVelocityX(160);
+    {
+        this.snowman.setVelocityX(-160);
 
-	}
-	else if (this.cursors.up.isDown  && this.snowman.body.touching.down)
-	{
-		this.snowman.setVelocityY(-430);
-	}
-	else
-	{
-		this.snowman.setVelocityX(0);
+        this.snowman.anims.play('left', true);
+    }
+    else if (this.cursors.right.isDown)
+    {
+        this.snowman.setVelocityX(160);
 
-	}
+        this.snowman.anims.play('right', true);
+    }
+    else
+    {
+        this.snowman.setVelocityX(0);
+
+    }
+
+    if (this.cursors.up.isDown && this.snowman.body.touching.down)
+    {
+        this.snowman.setVelocityY(-330);
+    }
 		
 	//enemy movement
 	//true, move left, false, move right
@@ -538,11 +544,12 @@ let PhaserConfig = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: false
+            debug: true
         }
     },
 	resolution: 3,
-    scene: [title_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
+    //scene: [title_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
+    scene: [SceneA,title_scene, tutorial_scene,  SceneB, gameOver_scene]
 };
 
 let game = new Phaser.Game(PhaserConfig);
