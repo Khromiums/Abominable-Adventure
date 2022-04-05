@@ -545,11 +545,11 @@ var narrative_scene = new Phaser.Class({
     },
     
     preload: function preloadScene () {
-        this.load.image('narrative', 'assets/start screen.png');
+        this.load.image('narrative', 'assets/narrative.png');
         
     },
     create: function createScene () {
-        this.background = this.add.image(600, 300, "title");
+        this.background = this.add.image(600, 300, "narrative");
 	    this.cursors = this.input.keyboard.createCursorKeys();
 		// can skip to game
         this.input.keyboard.once('keydown-ENTER', function () {
@@ -585,7 +585,7 @@ let PhaserConfig = {
     },
 	resolution: 3,
     //scene: [title_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
-    scene: [SceneA, title_scene, narrative_scene, tutorial_scene, SceneB, gameOver_scene]
+    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
 };
 
 let game = new Phaser.Game(PhaserConfig);
