@@ -57,6 +57,7 @@ var SceneA = new Phaser.Class({
         platforms.create (2000, 700, 'ground');
         //platforms.create (2200, 500, 'ground').setScale(2).refreshBody();
 		
+		
         //player
         this.anims.create({
             key: "stand",
@@ -270,10 +271,11 @@ var SceneB = new Phaser.Class({
         //platforms
         platforms = this.physics.add.staticGroup();
         platforms.create(200, 670, 'ground').refreshBody();
+		platforms.create (500, 400, 'ground');
         platforms.create(900, 670, 'ground');
-        platforms.create (500, 400, 'ground');
-		platforms.create (1100, 550, 'ground');
-		platforms.create (900, 300, 'ground');
+        platforms.create (900, 00, 'ground');
+		platforms.create (1100, 500, 'ground');
+		
 		
         //player
         this.anims.create({
