@@ -48,14 +48,15 @@ var SceneA = new Phaser.Class({
         //platforms
         platforms = this.physics.add.staticGroup();
         platforms.create(200, 670, 'ground').refreshBody();
+		platforms.create (200, 200, 'ground');
+		platforms.create (500, 400, 'ground');
         platforms.create(900, 670, 'ground');
-        platforms.create (500, 400, 'ground');
-		platforms.create (1100, 550, 'ground');
 		platforms.create (900, 300, 'ground');
-		//platforms.create (1500, 400, 'ground');
+		platforms.create (1100, 550, 'ground');
         platforms.create (1600, 400, 'ground');
-        platforms.create (2000, 700, 'ground');
-        //platforms.create (2200, 500, 'ground').setScale(2).refreshBody();
+		platforms.create (1700, 750, 'ground');
+		platforms.create(2200, 500, 'ground');
+        platforms.create (2200, 700, 'ground');
 		
 		
         //player
@@ -77,10 +78,13 @@ var SceneA = new Phaser.Class({
 
         this.coffee = this.physics.add.staticSprite(550,650,"coffee");
         this.coffee.setScale(3);
-        this.coffee.allowGravity = false
+        this.coffee.allowGravity = false;
+		this.coffee2 = this.physics.add.staticSprite(1900, 600, "coffee");
+		this.coffee2.setScale(3);
+		this.coffee.allowGravity = false;
         
         this.portal = this.physics.add.staticSprite(2500,630,"portal");
-        this.portal.setScale(3);
+        this.portal.setScale(10);
         this.portal.allowGravity = false
         
         const abcd = this;
@@ -117,16 +121,41 @@ var SceneA = new Phaser.Class({
             coffee.destroy()
 
         });
+		this.physics.add.collider(this.snowman, this.coffee2, function (snowman, coffee2) {
+            snowman.health += 5
+            sip.play();
+            healthText.setText('Health: ' + snowman.health + '%');
+            coffee2.destroy()
+
+        });
 
         this.paper = this.physics.add.staticSprite(750,630,"paper");
         this.paper.setScale(3);
-        this.paper.allowGravity = true
+        this.paper.allowGravity = true;
+		this.paper2 = this.physics.add.staticSprite(100, 160, "paper");
+		this.paper2.setScale(3);
+		this.paper2.allowGravity = true;
+		this.paper3 = this.physics.add.staticSprite(1700, 700, "paper");
+		this.paper3.setScale(3);
+		this.paper3.allowGravity = true;
 
         this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
             snowman.score += 5
             paper_sound.play();
             scoreText.setText('Score: ' + snowman.score);
             paper.destroy()
+        });
+		this.physics.add.collider(this.snowman, this.paper2, function (snowman, paper2) {
+            snowman.score += 5
+            paper_sound.play();
+            scoreText.setText('Score: ' + snowman.score);
+            paper2.destroy()
+        });
+		this.physics.add.collider(this.snowman, this.paper3, function (snowman, paper3) {
+            snowman.score += 5
+            paper_sound.play();
+            scoreText.setText('Score: ' + snowman.score);
+            paper3.destroy()
         });
         
         this.cursors = this.input.keyboard.createCursorKeys();
