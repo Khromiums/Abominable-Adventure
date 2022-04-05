@@ -66,11 +66,11 @@ var SceneA = new Phaser.Class({
         });
 
         this.snowman = this.physics.add.sprite(140,500, "snowman");
-        this.snowman.setScale(1.5).refreshBody();
+        this.snowman.setScale(2.5).refreshBody();
         this.snowman.play("stand");
         this.snowman.health = 50;
         this.snowman.score = 0;
-        this.snowman.body.setSize(30, 40, 6000, -6000);
+        this.snowman.body.setSize(25, 27).setOffset(20, 15);
         //The third and fourth number don't seem to do anything
         
 
@@ -522,8 +522,44 @@ var title_scene = new Phaser.Class({
         this.background = this.add.image(600, 300, "title");
 	    this.cursors = this.input.keyboard.createCursorKeys();
         this.input.keyboard.once('keydown-ENTER', function () {
-            this.scene.start('tutorial_scene');
+            this.scene.start('narrative_scene');
         }, this);
+
+    },
+	update: function updateScene () {
+		this.sound.stopAll();
+	}
+
+    
+});
+
+var narrative_scene = new Phaser.Class({
+
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function NarrativeScene ()
+    {
+        Phaser.Scene.call(this, { key: 'narrative_scene' });
+    },
+    
+    preload: function preloadScene () {
+        this.load.image('narrative', 'assets/start screen.png');
+        
+    },
+    create: function createScene () {
+        this.background = this.add.image(600, 300, "title");
+	    this.cursors = this.input.keyboard.createCursorKeys();
+		// can skip to game
+        this.input.keyboard.once('keydown-ENTER', function () {
+            this.scene.start('SceneA');
+        }, this);
+		// or go to tutorial 
+		this.input.keyboard.once('keydown-SPACE', function () {
+            this.scene.start('tutorial_scene');
+        },
+		this);
 
     },
 	update: function updateScene () {
@@ -549,7 +585,7 @@ let PhaserConfig = {
     },
 	resolution: 3,
     //scene: [title_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
-    scene: [SceneA,title_scene, tutorial_scene,  SceneB, gameOver_scene]
+    scene: [SceneA, title_scene, narrative_scene, tutorial_scene, SceneB, gameOver_scene]
 };
 
 let game = new Phaser.Game(PhaserConfig);
