@@ -300,11 +300,17 @@ var SceneB = new Phaser.Class({
         //platforms
         platforms = this.physics.add.staticGroup();
         platforms.create(200, 670, 'ground').refreshBody();
-		platforms.create (500, 400, 'ground');
-        platforms.create(900, 670, 'ground');
-        platforms.create (900, 00, 'ground');
-		platforms.create (1100, 500, 'ground');
-		
+		platforms.create(200, 300, 'ground');
+		platforms.create(600, 500, 'ground');
+		platforms.create(600, 150, 'ground');
+		platforms.create(900, 350, 'ground');
+		platforms.create(1350, 200, 'ground');
+		platforms.create(1750, 400, 'ground');
+		platforms.create(1650, 600, 'ground');
+		platforms.create(2000, 400, 'ground');
+		platforms.create(2500, 700, 'ground');
+		platforms.create(2650, 300, 'ground');
+				
 		
         //player
         this.anims.create({
@@ -315,17 +321,23 @@ var SceneB = new Phaser.Class({
         });
 
         this.snowman = this.physics.add.sprite(140,500, "snowman");
-        this.snowman.setScale(1.5).refreshBody();
+        this.snowman.setScale(2.5).refreshBody();
         this.snowman.play("stand");
         this.snowman.health = 50;
         this.snowman.score = 0;
-        this.snowman.body.setSize(30, 40, 6000, -6000);
+        this.snowman.body.setSize(25, 27).setOffset(20, 15);
         //The third and fourth number don't seem to do anything
         
 
-        this.coffee = this.physics.add.staticSprite(550,650,"coffee");
+        this.coffee = this.physics.add.staticSprite(600,450,"coffee");
         this.coffee.setScale(3);
         this.coffee.allowGravity = false
+		this.coffee2 = this.physics.add.staticSprite(200,250,"coffee");
+        this.coffee2.setScale(3);
+        this.coffee2.allowGravity = false
+		this.coffee3 = this.physics.add.staticSprite(1300,500,"coffee");
+        this.coffee3.setScale(3);
+        this.coffee3.allowGravity = false
         
         this.portal = this.physics.add.staticSprite(2500,630,"portal");
         this.portal.setScale(3);
@@ -365,9 +377,22 @@ var SceneB = new Phaser.Class({
             coffee.destroy()
 
         });
+		this.physics.add.collider(this.snowman, this.coffee2, function (snowman, coffee2) {
+            snowman.health += 5
+            sip.play();
+            healthText.setText('Health: ' + snowman.health + '%');
+            coffee2.destroy()
 
+        });
+		this.physics.add.collider(this.snowman, this.coffee3, function (snowman, coffee3) {
+            snowman.health += 5
+            sip.play();
+            healthText.setText('Health: ' + snowman.health + '%');
+            coffee3.destroy()
 
-        this.paper = this.physics.add.staticSprite(750,630,"paper");
+        });
+
+        this.paper = this.physics.add.staticSprite(750,110,"paper");
         this.paper.setScale(3).refreshBody();
         this.paper.allowGravity = true
 
@@ -378,10 +403,28 @@ var SceneB = new Phaser.Class({
             paper.destroy()
         });
         
+		this.paper2 = this.physics.add.staticSprite(1700,550,"paper");
+        this.paper2.setScale(3).refreshBody();
+        this.paper2.allowGravity = true
+
+        this.physics.add.collider(this.snowman, this.paper2, function (snowman, paper2) {
+            snowman.score += 5
+            paper_sound.play();
+            scoreText.setText('Score: ' + snowman.score);
+            paper2.destroy()
+        });
         
 
-        
-        
+        this.paper3 = this.physics.add.staticSprite(3100,150,"paper");
+        this.paper3.setScale(3).refreshBody();
+        this.paper3.allowGravity = true
+
+        this.physics.add.collider(this.snowman, this.paper3, function (snowman, paper3) {
+            snowman.score += 5
+            paper_sound.play();
+            scoreText.setText('Score: ' + snowman.score);
+            paper3.destroy()
+        });        
         
         
             this.cursors = this.input.keyboard.createCursorKeys();
@@ -616,7 +659,7 @@ let PhaserConfig = {
     },
 	resolution: 3,
     //scene: [title_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
-    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
+    scene: [SceneB, title_scene, narrative_scene, tutorial_scene, SceneA, gameOver_scene]
 };
 
 let game = new Phaser.Game(PhaserConfig);
