@@ -32,11 +32,10 @@ var SceneA = new Phaser.Class({
         //background
         //combined background ranges from 1800 to -600
         this.background = this.add.image(3700, 300, "background1");
-        //this.background.setScale(3.5);
         scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
         healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
-        scoreText.setScrollFactor(0)
-        healthText.setScrollFactor(0)
+        scoreText.setScrollFactor(0);
+        healthText.setScrollFactor(0);
 		
 		rat_noise = this.sound.add("rat_noise", {loop: false});
         roach_sound = this.sound.add("roach_noise", {loop: false});
@@ -76,12 +75,12 @@ var SceneA = new Phaser.Class({
         //The third and fourth number don't seem to do anything
         
 
-        this.coffee = this.physics.add.staticSprite(550,650,"coffee");
+        this.coffee = this.physics.add.staticSprite(550,850,"coffee");
         this.coffee.setScale(3);
         this.coffee.allowGravity = false;
 		this.coffee2 = this.physics.add.staticSprite(1900, 600, "coffee");
 		this.coffee2.setScale(3);
-		this.coffee.allowGravity = false;
+		this.coffee2.allowGravity = false;
         
         this.portal = this.physics.add.staticSprite(2500,630,"portal");
         this.portal.setScale(10);
@@ -93,17 +92,49 @@ var SceneA = new Phaser.Class({
         });
 		
 		//roach
-        roach = this.roach = this.physics.add.staticSprite(950, 645, "roach");
-        this.roach.setScale(1)
+        EnemyRoach = (index,game,x,y) =>{
+    
+            console.log(this);
+            this.roach = this.physics.add.sprite(x,y,'roach');
+            console.log(this.roach);
+            //this.roach.anchor.setTo(0.5,0.5);
+            this.roach.name = index.toString();
+            console.log(this.physics)
+            //this.physics.enable(this.roach,Phaser.Physics.ARCADE);
+            this.roach.body.immovable = true;
+            this.roach.body.collideWorldBounds = true;
+//            this.roachfunction = this.add.tween(this.roach).to({
+//                y: this.roach.y + 25
+//            },2000, 'Linear',true,0,100,true);
+            
+    this.tweens.add({
+        targets: this.roach,
+        alpha: {from: 1, to: 0},
+        duration: 3000,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Linear',
+        delay: 1000
+    });
+
+
+
+        }
+        
+        roach1 = EnemyRoach(0,game,400,400);
+        
+        
+        
         this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
             snowman.health -= 5
             healthText.setText('Health: ' + snowman.health + '%');
             roach_sound.play();
             roach.destroy()
         });
+        
+
 
         this.rat = this.physics.add.staticSprite(300, 360, "rat");
-        //this.roach.setScale(2)
         this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
             snowman.health -= 10
             rat_noise.play();
@@ -128,6 +159,7 @@ var SceneA = new Phaser.Class({
             coffee2.destroy()
 
         });
+        
 
         this.paper = this.physics.add.staticSprite(750,630,"paper");
         this.paper.setScale(3);
@@ -199,27 +231,27 @@ var SceneA = new Phaser.Class({
 		
 	//enemy movement
 	//true, move left, false, move right
-	//roach
-	if (rmove == true) {
-		this.roach.flipX = false;
-		if (this.roach.x < 950) {
-			this.roach.x += 1;
-		}
-		else {
-			rmove = false;
-		}
-		
-	}
-	else if (rmove == false) {
-		this.roach.flipX = true;
-		if (this.roach.x > 850) {
-			this.roach.x -= 1;
-		}
-		else {
-			rmove = true;
-			
-		}
-	}
+//	//roach
+//	if (rmove == true) {
+//		this.roach.flipX = false;
+//		if (this.roach.x < 950) {
+//			this.roach.x += 1;
+//		}
+//		else {
+//			rmove = false;
+//		}
+//		
+//	}
+//	else if (rmove == false) {
+//		this.roach.flipX = true;
+//		if (this.roach.x > 850) {
+//			this.roach.x -= 1;
+//		}
+//		else {
+//			rmove = true;
+//			
+//		}
+//	}
 		
 	
 	//rat
@@ -284,7 +316,6 @@ var SceneB = new Phaser.Class({
         //background
         //combined background ranges from 1800 to -600
         this.background = this.add.image(3700, 300, "background2");
-        //this.background.setScale(3.5);
         scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
         healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
         scoreText.setScrollFactor(0)
@@ -653,16 +684,19 @@ let PhaserConfig = {
 	physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 400 },
             debug: true
         }
     },
 	resolution: 3,
-    //scene: [title_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
-    scene: [SceneB, title_scene, narrative_scene, tutorial_scene, SceneA, gameOver_scene]
+    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
+    //scene: [title_scene, narrative_scene, tutorial_scene, SceneA, gameOver_scene]
+    //scene: [SceneB, title_scene, narrative_scene, tutorial_scene, SceneA, gameOver_scene]
 };
 
-let game = new Phaser.Game(PhaserConfig);
+var game = new Phaser.Game(PhaserConfig);
+
+
 
 var snowman;
 var background;
