@@ -654,12 +654,12 @@ let PhaserConfig = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: true
+            debug: false
         }
     },
 	resolution: 3,
     //scene: [title_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
-    scene: [SceneB, title_scene, narrative_scene, tutorial_scene, SceneA, gameOver_scene]
+    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
 };
 
 let game = new Phaser.Game(PhaserConfig);
