@@ -90,6 +90,8 @@ var SceneA = new Phaser.Class({
         const abcd = this;
         this.physics.add.collider(this.snowman, this.portal, function (snowman, portal) {           
             abcd.scene.start('SceneB');
+            abcd.sound.stopAll();
+            
         });
 		
 		//roach
@@ -572,6 +574,7 @@ var gameOver_scene = new Phaser.Class({
     },
 	update: function updateScene () {
 		this.sound.stopAll();
+        
 	}
 
     
