@@ -347,7 +347,7 @@ var SceneB = new Phaser.Class({
         
         const abcd = this;
         this.physics.add.collider(this.snowman, this.portal, function (snowman, portal) {           
-            abcd.scene.start('SceneB');
+            abcd.scene.start('SceneC');
         });
 		
 		//roach
@@ -521,6 +521,208 @@ var SceneB = new Phaser.Class({
 }
 });
 
+var SceneC = new Phaser.Class({
+
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function SceneC ()
+    {
+        Phaser.Scene.call(this, { key: 'SceneC' });
+    },
+    
+    preload: function preloadScene () {
+        this.load.image('start', 'assets/level3start.png')
+        this.load.image('narrative', 'assets/3narrative.png')
+        this.load.image('Q1', 'assets/3.1.png')
+        this.load.image('Q2', 'assets/3.2.png')
+        this.load.image('Q3', 'assets/3.3.png')
+        this.load.image('Q4_easy', 'assets/3.4(easy).png')
+        this.load.image('Q4_hard', 'assets/3.4(hard).png')
+        this.load.image('Q5_easy', 'assets/3.5(easy).png')
+        this.load.image('Q5_hard', 'assets/3.5(hard).png')
+        this.load.image('end', 'assets/3end.png')
+        this.load.image('lose', 'assets/lose.png')
+        this.load.image('win', 'assets/win.png')
+    },
+    create: function createScene () {
+        this.add.image(600,300,'start') 
+    },
+    
+    update: function updateScene () {
+        if (current_image == 'start') {
+            this.input.keyboard.once('keydown-ENTER', function () {
+                this.add.image(600,300,'narrative');
+                current_image = 'narrative'
+            }, this);
+        }
+        if (current_image == 'narrative') {
+            this.input.keyboard.once('keydown-ENTER', function () {
+                this.add.image(600,300,'Q1');
+                current_image = 'Q1'
+            }, this);
+        }
+        if (current_image == 'Q1') {
+            this.input.keyboard.once('keydown-A', function () {
+                this.add.image(600,300,'Q2')
+                cor_ans += 1
+                console.log('correct')
+                current_image = 'Q2'
+            }, this);
+            this.input.keyboard.once('keydown-B', function () {
+                current_image = 'Q2'
+                this.add.image(600,300,'Q2')
+            }, this);
+            
+        }
+        if (current_image == 'Q2') {
+            this.input.keyboard.once('keydown-D', function () {
+                this.add.image(600,300,'Q3');
+                current_image = 'Q3'
+            }, this);
+            this.input.keyboard.once('keydown-A', function () {
+                this.add.image(600,300,'Q3');
+                current_image = 'Q3'
+            }, this);
+            this.input.keyboard.once('keydown-B', function () {
+                this.add.image(600,300,'Q3');
+                current_image = 'Q3'
+                cor_ans += 1
+                console.log('correct')
+            }, this);
+            this.input.keyboard.once('keydown-C', function () {
+                this.add.image(600,300,'Q3');
+                current_image = 'Q3'
+            }, this);
+        }
+        if (current_image == 'Q3' && cor_ans > 100) {
+            this.input.keyboard.once('keydown-A', function () {
+                this.add.image(600,300,'Q4_hard');
+                current_image = 'Q4'
+                cor_ans += 1
+                console.log('correct')
+            }, this);
+            this.input.keyboard.once('keydown-B', function () {
+                this.add.image(600,300,'Q4_hard');
+                current_image = 'Q4'
+            }, this);
+            this.input.keyboard.once('keydown-D', function () {
+                this.add.image(600,300,'Q4_hard');
+                current_image = 'Q4'
+            }, this);
+            this.input.keyboard.once('keydown-C', function () {
+                this.add.image(600,300,'Q4_hard');
+                current_image = 'Q4'
+            }, this);
+        } else if (current_image == 'Q3') {
+            this.input.keyboard.once('keydown-A', function () {
+                this.add.image(600,300,'Q4_easy');
+                current_image = 'Q4'
+                cor_ans += 1
+                console.log('correct')
+            }, this);
+            this.input.keyboard.once('keydown-B', function () {
+                this.add.image(600,300,'Q4_easy');
+                current_image = 'Q4'
+            }, this);
+            this.input.keyboard.once('keydown-D', function () {
+                this.add.image(600,300,'Q4_easy');
+                current_image = 'Q4'
+            }, this);
+            this.input.keyboard.once('keydown-C', function () {
+                this.add.image(600,300,'Q4_easy');
+                current_image = 'Q4'
+            }, this);
+        }
+        if (current_image == 'Q4' && cor_ans > 100) {
+            this.input.keyboard.once('keydown-D', function () {
+                this.add.image(600,300,'Q5_hard');
+                current_image = 'Q5'
+                cor_ans += 1
+                console.log('correct')
+            }, this);
+            this.input.keyboard.once('keydown-B', function () {
+                this.add.image(600,300,'Q5_hard');
+                current_image = 'Q5'
+            }, this);
+            this.input.keyboard.once('keydown-A', function () {
+                this.add.image(600,300,'Q5_hard');
+                current_image = 'Q5'
+            }, this);
+            this.input.keyboard.once('keydown-C', function () {
+                this.add.image(600,300,'Q5_hard');
+                current_image = 'Q5'
+            }, this);
+        } else if (current_image == 'Q4') {
+            this.input.keyboard.once('keydown-A', function () {
+                this.add.image(600,300,'Q5_easy');
+                current_image = 'Q5'
+                cor_ans += 1
+                console.log('correct')
+            }, this);
+            this.input.keyboard.once('keydown-B', function () {
+                this.add.image(600,300,'Q5_easy');
+                current_image = 'Q5'
+            }, this);
+            this.input.keyboard.once('keydown-D', function () {
+                this.add.image(600,300,'Q5_easy');
+                current_image = 'Q5'
+            }, this);
+            this.input.keyboard.once('keydown-C', function () {
+                this.add.image(600,300,'Q5_easy');
+                current_image = 'Q5'
+            }, this);
+        }
+        if (current_image == 'Q5' && cor_ans > 100) {
+            this.input.keyboard.once('keydown-C', function () {
+                this.add.image(600,300,'end');
+                current_image = 'end'
+                cor_ans += 1
+                console.log('correct')
+            }, this);
+            this.input.keyboard.once('keydown-B', function () {
+                this.add.image(600,300,'end');
+                current_image = 'end'
+            }, this);
+            this.input.keyboard.once('keydown-A', function () {
+                this.add.image(600,300,'end');
+                current_image = 'end'
+            }, this);
+            this.input.keyboard.once('keydown-D', function () {
+                this.add.image(600,300,'end');
+                current_image = 'end'
+            }, this);
+        } else if (current_image == 'Q5') {
+            this.input.keyboard.once('keydown-C', function () {
+                this.add.image(600,300,'end');
+                current_image = 'end'
+                cor_ans += 1
+                console.log('correct')
+            }, this);
+            this.input.keyboard.once('keydown-B', function () {
+                this.add.image(600,300,'end');
+                current_image = 'end'
+            }, this);
+            this.input.keyboard.once('keydown-D', function () {
+                this.add.image(600,300,'end');
+                current_image = 'end'
+            }, this);
+            this.input.keyboard.once('keydown-A', function () {
+                this.add.image(600,300,'end');
+                current_image = 'end'
+            }, this);
+        }
+        if (current_image == 'end') {
+            this.input.keyboard.once('keydown-ENTER', function () {
+            this.add.image(600,300,'win');
+        }, this);
+        }
+        
+    },
+});
+
+
 var tutorial_scene = new Phaser.Class({
 
     Extends: Phaser.Scene,
@@ -662,7 +864,7 @@ let PhaserConfig = {
     },
 	resolution: 3,
     //scene: [title_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
-    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
+    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, SceneC, gameOver_scene]
 };
 
 let game = new Phaser.Game(PhaserConfig);
@@ -675,6 +877,8 @@ var gameover = false;
 var rmove = false;
 var ramove = false;
 var music;
+var current_image = 'start';
+var cor_ans = 0;
 
 
 function initScene() {}
