@@ -15,8 +15,8 @@ var SceneA = new Phaser.Class({
         this.load.image("coffee", "assets/coffee.png");
 		this.load.image("ground", "assets/ground.png");
         this.load.image("paper", "assets/Paper.png");
-        this.load.image("roach", "assets/roach.png");
-        this.load.image("rat","assets/rat1.png");
+        this.load.spritesheet("roach", "assets/Cockroach.png",{frameWidth: 32, frameHeight: 32});
+        this.load.spritesheet("rat","assets/Rat.png",{frameWidth: 70, frameHeight: 70} );
         this.load.image("portal","assets/portal.png");
         this.load.audio("rat_noise","assets/rat_noise.mp3");
         this.load.audio("roach_noise", "assets/roach_sound.mp3");
@@ -33,8 +33,8 @@ var SceneA = new Phaser.Class({
         //combined background ranges from 1800 to -600
         this.background = this.add.image(3700, 300, "background1");
         //this.background.setScale(3.5);
-        scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
-        healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
+        scoreText = this.add.text(16, 16, `Score: ${score}`, { fontSize: '40px', fill: '#0000ff'});
+        healthText = this.add.text(16, 70, `Health: ${health}%`, { fontSize: '40px', fill: '#0000ff' });
         scoreText.setScrollFactor(0)
         healthText.setScrollFactor(0)
 		
@@ -84,7 +84,7 @@ var SceneA = new Phaser.Class({
 		this.coffee.allowGravity = false;
         
         this.portal = this.physics.add.staticSprite(2500,630,"portal");
-        this.portal.setScale(10);
+        this.portal.setScale(3);
         this.portal.allowGravity = false
         
         const abcd = this;
@@ -93,30 +93,93 @@ var SceneA = new Phaser.Class({
             abcd.sound.stopAll();
             
         });
-		
-		//roach
-        roach = this.roach = this.physics.add.staticSprite(950, 645, "roach");
-        this.roach.setScale(1)
-        this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
-            snowman.health -= 5
+        
+        EnemyRoach = (index,game,x,y) =>{
+
+            this.roach = this.physics.add.sprite(x,y,'roach');
+            this.roach.name = index.toString();
+            this.roach.body.immovable = false;
+            this.roach.body.collideWorldBounds = false;
+            this.physics.add.collider(this.roach, platforms);
+
+            this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
+            snowman.health -= 5;
+            health -= 5;
             healthText.setText('Health: ' + snowman.health + '%');
             roach_sound.play();
             roach.destroy()
         });
 
-        this.rat = this.physics.add.staticSprite(300, 360, "rat");
-        //this.roach.setScale(2)
-        this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
-            snowman.health -= 10
-            rat_noise.play();
+            this.anims.create({
+            key: "walk",
+            frameRate: 2,
+            frames: this.anims.generateFrameNumbers("roach", {start: 0, end: 3}),
+            repeat: -1
+        });
+        this.roach.play("walk");
+
+
+        this.tweens.add({
+            targets: this.roach,
+            x: x+380,
+            duration: 3000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Linear',
+            delay: 500
+        });
+
+        }
+        
+        EnemyRat = (index,game,x,y) =>{
+
+            this.rat = this.physics.add.sprite(x,y,'rat');
+            this.rat.name = index.toString();
+            this.rat.body.immovable = false;
+            this.rat.body.collideWorldBounds = false;
+            this.physics.add.collider(this.rat, platforms);
+
+            this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
+            snowman.health -= 5;
+            health -= 10;
             healthText.setText('Health: ' + snowman.health + '%');
+            rat_noise.play();
             rat.destroy()
         });
+
+            this.anims.create({
+            key: "walkRat",
+            frameRate: 2,
+            frames: this.anims.generateFrameNumbers("rat", {start: 0, end: 3}),
+            repeat: -1
+        });
+        this.rat.play("walkRat");
+
+
+        this.tweens.add({
+            targets: this.rat,
+            x: x+380,
+            duration: 3000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Linear',
+            delay: 500
+        });
+
+        }
+
+
+        roach1 = EnemyRoach(0,game,200,400);
+        //rat1 = EnemyRat(0,game,20,300);
+		
+
+
 
         this.snowman.setBounce(0.2);
         this.snowman.setCollideWorldBounds(false);
 
         this.physics.add.collider(this.snowman, this.coffee, function (snowman, coffee) {
+            health += 5
             snowman.health += 5
             sip.play();
             healthText.setText('Health: ' + snowman.health + '%');
@@ -124,6 +187,7 @@ var SceneA = new Phaser.Class({
 
         });
 		this.physics.add.collider(this.snowman, this.coffee2, function (snowman, coffee2) {
+            health += 5
             snowman.health += 5
             sip.play();
             healthText.setText('Health: ' + snowman.health + '%');
@@ -142,18 +206,21 @@ var SceneA = new Phaser.Class({
 		this.paper3.allowGravity = true;
 
         this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
+            score += 5
             snowman.score += 5
             paper_sound.play();
             scoreText.setText('Score: ' + snowman.score);
             paper.destroy()
         });
 		this.physics.add.collider(this.snowman, this.paper2, function (snowman, paper2) {
+            score += 5
             snowman.score += 5
             paper_sound.play();
             scoreText.setText('Score: ' + snowman.score);
             paper2.destroy()
         });
 		this.physics.add.collider(this.snowman, this.paper3, function (snowman, paper3) {
+            score += 5
             snowman.score += 5
             paper_sound.play();
             scoreText.setText('Score: ' + snowman.score);
@@ -168,6 +235,8 @@ var SceneA = new Phaser.Class({
 	
 },
     update: function updateScene() {
+        
+        
 	if (this.snowman.health == 0)
 	{
 		this.scene.start('gameOver_scene');
@@ -202,49 +271,8 @@ var SceneA = new Phaser.Class({
 	//enemy movement
 	//true, move left, false, move right
 	//roach
-	if (rmove == true) {
-		this.roach.flipX = false;
-		if (this.roach.x < 950) {
-			this.roach.x += 1;
-		}
-		else {
-			rmove = false;
-		}
-		
-	}
-	else if (rmove == false) {
-		this.roach.flipX = true;
-		if (this.roach.x > 850) {
-			this.roach.x -= 1;
-		}
-		else {
-			rmove = true;
-			
-		}
-	}
-		
-	
-	//rat
-	if (ramove == true) {
-		this.rat.flipX = false;
-		if (this.rat.x < 600) {
-			this.rat.x += 1;
-		}
-		else {
-			ramove = false;
-		}
-		
-	}
-	else if (ramove == false) {
-		this.rat.flipX = true;
-		if (this.rat.x > 300) {
-			this.rat.x -= 1;
-		}
-		else {
-			ramove = true;
-			
-		}
-	}
+
+
 		
 	        
 }
@@ -287,8 +315,8 @@ var SceneB = new Phaser.Class({
         //combined background ranges from 1800 to -600
         this.background = this.add.image(3700, 300, "background2");
         //this.background.setScale(3.5);
-        scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '40px', fill: '#0000ff' });
-        healthText = this.add.text(16, 70, 'Health: 50' + '%', { fontSize: '40px', fill: '#0000ff' });
+        scoreText = this.add.text(16, 16, `Score: ${score}`, { fontSize: '40px', fill: '#0000ff'});
+        healthText = this.add.text(16, 70, `Health: ${health}%`, { fontSize: '40px', fill: '#0000ff' });
         scoreText.setScrollFactor(0)
         healthText.setScrollFactor(0)
 		
@@ -350,30 +378,90 @@ var SceneB = new Phaser.Class({
             abcd.scene.start('SceneC');
         });
 		
-		//roach
-        roach = this.roach = this.physics.add.staticSprite(950, 645, "roach");
-        this.roach.setScale(1)
-        this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
-            snowman.health -= 5
+        EnemyRoach = (index,game,x,y) =>{
+
+            this.roach = this.physics.add.sprite(x,y,'roach');
+            this.roach.name = index.toString();
+            this.roach.body.immovable = false;
+            this.roach.body.collideWorldBounds = false;
+            this.physics.add.collider(this.roach, platforms);
+
+            this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
+            snowman.health -= 5;
+            health -= 5;
             healthText.setText('Health: ' + snowman.health + '%');
             roach_sound.play();
             roach.destroy()
         });
 
-        this.rat = this.physics.add.staticSprite(300, 360, "rat");
-        //this.roach.setScale(2)
-        this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
-            snowman.health -= 10
-            rat_noise.play();
+            this.anims.create({
+            key: "walk",
+            frameRate: 2,
+            frames: this.anims.generateFrameNumbers("roach", {start: 0, end: 3}),
+            repeat: -1
+        });
+        this.roach.play("walk");
+
+
+        this.tweens.add({
+            targets: this.roach,
+            x: x+380,
+            duration: 3000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Linear',
+            delay: 500
+        });
+
+        }
+        
+        EnemyRat = (index,game,x,y) =>{
+
+            this.rat = this.physics.add.sprite(x,y,'rat');
+            this.rat.name = index.toString();
+            this.rat.body.immovable = false;
+            this.rat.body.collideWorldBounds = false;
+            this.physics.add.collider(this.rat, platforms);
+
+            this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
+            snowman.health -= 5;
+            health -= 10;
             healthText.setText('Health: ' + snowman.health + '%');
+            rat_noise.play();
             rat.destroy()
         });
+
+            this.anims.create({
+            key: "walkRat",
+            frameRate: 2,
+            frames: this.anims.generateFrameNumbers("rat", {start: 0, end: 3}),
+            repeat: -1
+        });
+        this.rat.play("walkRat");
+
+
+        this.tweens.add({
+            targets: this.rat,
+            x: x+380,
+            duration: 3000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Linear',
+            delay: 500
+        });
+
+        }
+
+
+        roach1 = EnemyRoach(0,game,200,400);
+        //rat1 = EnemyRat(0,game,20,300);
 
         this.snowman.setBounce(0.2);
         this.snowman.setCollideWorldBounds(false);
 
         this.physics.add.collider(this.snowman, this.coffee, function (snowman, coffee) {
             snowman.health += 5
+            health += 5
             sip.play();
             healthText.setText('Health: ' + snowman.health + '%');
             coffee.destroy()
@@ -381,6 +469,7 @@ var SceneB = new Phaser.Class({
         });
 		this.physics.add.collider(this.snowman, this.coffee2, function (snowman, coffee2) {
             snowman.health += 5
+            health += 5
             sip.play();
             healthText.setText('Health: ' + snowman.health + '%');
             coffee2.destroy()
@@ -388,6 +477,7 @@ var SceneB = new Phaser.Class({
         });
 		this.physics.add.collider(this.snowman, this.coffee3, function (snowman, coffee3) {
             snowman.health += 5
+            health += 5
             sip.play();
             healthText.setText('Health: ' + snowman.health + '%');
             coffee3.destroy()
@@ -400,6 +490,7 @@ var SceneB = new Phaser.Class({
 
         this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
             snowman.score += 5
+            score += 5
             paper_sound.play();
             scoreText.setText('Score: ' + snowman.score);
             paper.destroy()
@@ -411,6 +502,7 @@ var SceneB = new Phaser.Class({
 
         this.physics.add.collider(this.snowman, this.paper2, function (snowman, paper2) {
             snowman.score += 5
+            score += 5
             paper_sound.play();
             scoreText.setText('Score: ' + snowman.score);
             paper2.destroy()
@@ -423,13 +515,14 @@ var SceneB = new Phaser.Class({
 
         this.physics.add.collider(this.snowman, this.paper3, function (snowman, paper3) {
             snowman.score += 5
+            score += 5
             paper_sound.play();
             scoreText.setText('Score: ' + snowman.score);
             paper3.destroy()
         });        
         
         
-            this.cursors = this.input.keyboard.createCursorKeys();
+        this.cursors = this.input.keyboard.createCursorKeys();
         this.physics.add.collider(this.snowman, platforms);
     //camera
         this.cameras.main.setBounds(0,0,this.background.displayWidth,this.background.displayHeight)
@@ -469,54 +562,7 @@ var SceneB = new Phaser.Class({
     {
         this.snowman.setVelocityY(-330);
     }
-		
-	//enemy movement
-	//true, move left, false, move right
-	//roach
-	if (rmove == true) {
-		this.roach.flipX = false;
-		if (this.roach.x < 950) {
-			this.roach.x += 1;
-		}
-		else {
-			rmove = false;
-		}
-		
-	}
-	else if (rmove == false) {
-		this.roach.flipX = true;
-		if (this.roach.x > 850) {
-			this.roach.x -= 1;
-		}
-		else {
-			rmove = true;
-			
-		}
-	}
-		
 	
-	//rat
-	if (ramove == true) {
-		this.rat.flipX = false;
-		if (this.rat.x < 600) {
-			this.rat.x += 1;
-		}
-		else {
-			ramove = false;
-		}
-		
-	}
-	else if (ramove == false) {
-		this.rat.flipX = true;
-		if (this.rat.x > 300) {
-			this.rat.x -= 1;
-		}
-		else {
-			ramove = true;
-			
-		}
-	}
-		
 	        
 }
 });
@@ -859,7 +905,7 @@ let PhaserConfig = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: false
+            debug: true
         }
     },
 	resolution: 3,
@@ -879,6 +925,8 @@ var ramove = false;
 var music;
 var current_image = 'start';
 var cor_ans = 0;
+var score = 0;
+var health = 50;
 
 
 function initScene() {}
