@@ -32,7 +32,6 @@ var SceneA = new Phaser.Class({
         //background
         //combined background ranges from 1800 to -600
         this.background = this.add.image(3700, 300, "background1");
-        //this.background.setScale(3.5);
         scoreText = this.add.text(16, 16, `Score: ${score}`, { fontSize: '40px', fill: '#0000ff'});
         healthText = this.add.text(16, 70, `Health: ${health}%`, { fontSize: '40px', fill: '#0000ff' });
         scoreText.setScrollFactor(0)
@@ -48,15 +47,16 @@ var SceneA = new Phaser.Class({
         //platforms
         platforms = this.physics.add.staticGroup();
         platforms.create(200, 670, 'ground').refreshBody();
-		platforms.create (200, 200, 'ground');
-		platforms.create (500, 400, 'ground');
+		platforms.create (200, 250, 'ground');
+		platforms.create (500, 420, 'ground');
         platforms.create(900, 670, 'ground');
-		platforms.create (900, 300, 'ground');
+		platforms.create (880, 285, 'ground');
 		platforms.create (1100, 550, 'ground');
-        platforms.create (1600, 400, 'ground');
+        platforms.create (1600, 430, 'ground');
 		platforms.create (1700, 750, 'ground');
-		platforms.create(2200, 500, 'ground');
+		//platforms.create(2200, 500, 'ground');
         platforms.create (2200, 700, 'ground');
+        this.snowman = this.physics.add.sprite(200,600, "snowman");
 		
 		
         //player
@@ -67,7 +67,7 @@ var SceneA = new Phaser.Class({
             repeat: -1
         });
 
-        this.snowman = this.physics.add.sprite(140,500, "snowman");
+        
         this.snowman.setScale(2.5).refreshBody();
         this.snowman.play("stand");
         this.snowman.health = 50;
@@ -76,16 +76,15 @@ var SceneA = new Phaser.Class({
         //The third and fourth number don't seem to do anything
         
 
-        this.coffee = this.physics.add.staticSprite(550,700,"coffee");
+        this.coffee = this.physics.add.staticSprite(550,750,"coffee");
         this.coffee.setScale(3);
         this.coffee.allowGravity = false;
 		this.coffee2 = this.physics.add.staticSprite(1900, 600, "coffee");
 		this.coffee2.setScale(3);
 		this.coffee.allowGravity = false;
         
-        this.portal = this.physics.add.staticSprite(2500,630,"portal");
-        //this.portal = this.physics.add.staticSprite(140,630,"portal");
-        this.portal.setScale(3);
+        this.portal = this.physics.add.staticSprite(1000,630,"portal");
+        this.portal.setScale(10);
         this.portal.allowGravity = false
         
         const abcd = this;
@@ -94,23 +93,26 @@ var SceneA = new Phaser.Class({
             abcd.sound.stopAll();
             
         });
+		
+
+
         
         EnemyRoach = (index,game,x,y) =>{
-
+    
             this.roach = this.physics.add.sprite(x,y,'roach');
             this.roach.name = index.toString();
             this.roach.body.immovable = false;
             this.roach.body.collideWorldBounds = false;
             this.physics.add.collider(this.roach, platforms);
-
-            this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
             
+            this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
+            snowman.health -= 5;
             health -= 5;
-            healthText.setText('Health: ' + health + '%');
+            healthText.setText('Health: ' + snowman.health + '%');
             roach_sound.play();
             roach.destroy()
         });
-
+            
             this.anims.create({
             key: "walk",
             frameRate: 2,
@@ -118,12 +120,12 @@ var SceneA = new Phaser.Class({
             repeat: -1
         });
         this.roach.play("walk");
-
-
+            
+            
         this.tweens.add({
             targets: this.roach,
             x: x+380,
-            duration: 1900,
+            duration: 3000,
             yoyo: true,
             repeat: -1,
             ease: 'Linear',
@@ -132,48 +134,46 @@ var SceneA = new Phaser.Class({
 
         }
         
+        
+        roach1 = EnemyRoach(0,game,320,300); 
+        
+        //rat
         EnemyRat = (index,game,x,y) =>{
-
+    
             this.rat = this.physics.add.sprite(x,y,'rat');
             this.rat.name = index.toString();
-            this.rat.body.immovable = false;
-            this.rat.body.collideWorldBounds = false;
-            this.physics.add.collider(this.rat, platforms);
-
+            this.rat.body.immovable = true;
+            this.rat.body.collideWorldBounds = true;
             this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
-            
-            health -= 10;
-            healthText.setText('Health: ' + health + '%');
+            snowman.health -= 10
             rat_noise.play();
+            healthText.setText('Health: ' + snowman.health + '%');
             rat.destroy()
         });
-
+            
             this.anims.create({
-            key: "walkRat",
-            frameRate: 1,
+            key: "walk1",
+            frameRate: 2,
             frames: this.anims.generateFrameNumbers("rat", {start: 0, end: 3}),
             repeat: -1
         });
-        this.rat.play("walkRat");
-
-
+        this.rat.play("walk1");
+            
+            
         this.tweens.add({
             targets: this.rat,
-            x: x+380,
-            duration: 1900,
+            x: x+100,
+            duration: 3000,
             yoyo: true,
             repeat: -1,
             ease: 'Linear',
-            delay: 500
+            delay: 1000
         });
 
         }
+        
+        rat1 = EnemyRat(0,game,600,600);
 
-
-        roach1 = EnemyRoach(0,game,200,400);
-        rat1 = EnemyRat(0,game,20,300);
-        rat2 = EnemyRat(0,game,300,150);
-		
 
 
 
@@ -181,18 +181,16 @@ var SceneA = new Phaser.Class({
         this.snowman.setCollideWorldBounds(false);
 
         this.physics.add.collider(this.snowman, this.coffee, function (snowman, coffee) {
-            health += 5
-            
+            snowman.health += 5
             sip.play();
-            healthText.setText('Health: ' + health + '%');
+            healthText.setText('Health: ' + snowman.health + '%');
             coffee.destroy()
 
         });
 		this.physics.add.collider(this.snowman, this.coffee2, function (snowman, coffee2) {
-            health += 5
-            
+            snowman.health += 5
             sip.play();
-            healthText.setText('Health: ' + health + '%');
+            healthText.setText('Health: ' + snowman.health + '%');
             coffee2.destroy()
 
         });
@@ -208,37 +206,33 @@ var SceneA = new Phaser.Class({
 		this.paper3.allowGravity = true;
 
         this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
-            score += 5
-            
+            snowman.score += 5
             paper_sound.play();
-            scoreText.setText('Score: ' + score);
+            scoreText.setText('Score: ' + snowman.score);
             paper.destroy()
         });
 		this.physics.add.collider(this.snowman, this.paper2, function (snowman, paper2) {
-            score += 5
-            
+            snowman.score += 5
             paper_sound.play();
-            scoreText.setText('Score: ' + score);
+            scoreText.setText('Score: ' + snowman.score);
             paper2.destroy()
         });
 		this.physics.add.collider(this.snowman, this.paper3, function (snowman, paper3) {
-            score += 5
-           
+            snowman.score += 5
             paper_sound.play();
-            scoreText.setText('Score: ' + score);
+            scoreText.setText('Score: ' + snowman.score);
             paper3.destroy()
         });
         
         this.cursors = this.input.keyboard.createCursorKeys();
         this.physics.add.collider(this.snowman, platforms);
+        
     //camera
         this.cameras.main.setBounds(0,0,this.background.displayWidth,this.background.displayHeight)
         this.cameras.main.startFollow(this.snowman)      
 	
 },
     update: function updateScene() {
-        
-        
 	if (this.snowman.health == 0)
 	{
 		this.scene.start('gameOver_scene');
@@ -270,10 +264,6 @@ var SceneA = new Phaser.Class({
         this.snowman.setVelocityY(-330);
     }
 		
-	//enemy movement
-	//true, move left, false, move right
-	//roach
-
 
 		
 	        
@@ -319,7 +309,6 @@ var SceneB = new Phaser.Class({
         //this.background.setScale(3.5);
         scoreText = this.add.text(16, 16, `Score: ${score}`, { fontSize: '40px', fill: '#0000ff'});
         healthText = this.add.text(16, 70, `Health: ${health}%`, { fontSize: '40px', fill: '#0000ff' });
-        
         scoreText.setScrollFactor(0)
         healthText.setScrollFactor(0)
 		
@@ -343,8 +332,6 @@ var SceneB = new Phaser.Class({
 		platforms.create(2000, 400, 'ground');
 		platforms.create(2500, 700, 'ground');
 		platforms.create(2650, 300, 'ground');
-        platforms.create(2850, 600, 'ground');
-        platforms.create(3000, 450, 'ground');
 				
 		
         //player
@@ -373,9 +360,6 @@ var SceneB = new Phaser.Class({
 		this.coffee3 = this.physics.add.staticSprite(1300,500,"coffee");
         this.coffee3.setScale(3);
         this.coffee3.allowGravity = false
-        this.coffee4 = this.physics.add.staticSprite(2080,700,"coffee");
-        this.coffee4.setScale(3);
-        this.coffee4.allowGravity = false
         
         this.portal = this.physics.add.staticSprite(2500,630,"portal");
         this.portal.setScale(3);
@@ -383,31 +367,23 @@ var SceneB = new Phaser.Class({
         
         const abcd = this;
         this.physics.add.collider(this.snowman, this.portal, function (snowman, portal) {           
-            abcd.scene.start('SceneC');
+            abcd.scene.start('SceneB');
         });
 		
-//        healthText2 = this.add.text(16, 120, this.snowman.x, { fontSize: '40px', fill: '#0000ff' });
-//        healthText2.setScrollFactor(0)
-//        healthText3 = this.add.text(16, 160, this.snowman.y, { fontSize: '40px', fill: '#0000ff' });
-//        healthText3.setScrollFactor(0)
-        //This is for debugging
-        
-        EnemyRoach = (index,game,x,y) =>{
-
+		        EnemyRoach = (index,game,x,y) =>{
+    
             this.roach = this.physics.add.sprite(x,y,'roach');
             this.roach.name = index.toString();
-            this.roach.body.immovable = false;
-            this.roach.body.collideWorldBounds = false;
-            this.physics.add.collider(this.roach, platforms);
-
-            this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
+            this.roach.body.immovable = true;
+            this.roach.body.collideWorldBounds = true;
             
-            health -= 5;
-            healthText.setText('Health: ' + health + '%');
+            this.physics.add.collider(this.snowman,this.roach, function (snowman, roach){
+            snowman.health -= 5
+            healthText.setText('Health: ' + snowman.health + '%');
             roach_sound.play();
             roach.destroy()
         });
-
+            
             this.anims.create({
             key: "walk",
             frameRate: 2,
@@ -415,136 +391,123 @@ var SceneB = new Phaser.Class({
             repeat: -1
         });
         this.roach.play("walk");
-
-
+            
+            
         this.tweens.add({
             targets: this.roach,
-            x: x+380,
-            duration: 1900,
+            x: x+100,
+            duration: 3000,
             yoyo: true,
             repeat: -1,
             ease: 'Linear',
-            delay: 500
+            delay: 1000
         });
 
         }
         
+        roach1 = EnemyRoach(0,game,400,400);
+    
+        
+        
+        
+        //rat
         EnemyRat = (index,game,x,y) =>{
-
+    
             this.rat = this.physics.add.sprite(x,y,'rat');
             this.rat.name = index.toString();
-            this.rat.body.immovable = false;
-            this.rat.body.collideWorldBounds = false;
-            this.physics.add.collider(this.rat, platforms);
-
+            this.rat.body.immovable = true;
+            this.rat.body.collideWorldBounds = true;
             this.physics.add.collider(this.snowman,this.rat, function (snowman, rat){
-            
-            health -= 10;
-            healthText.setText('Health: ' + health + '%');
+            snowman.health -= 10
             rat_noise.play();
+            healthText.setText('Health: ' + snowman.health + '%');
             rat.destroy()
         });
-
+            
             this.anims.create({
-            key: "walkRat",
+            key: "walk1",
             frameRate: 2,
             frames: this.anims.generateFrameNumbers("rat", {start: 0, end: 3}),
             repeat: -1
         });
-        this.rat.play("walkRat");
-
-
+        this.rat.play("walk1");
+            
+            
         this.tweens.add({
             targets: this.rat,
-            x: x+380,
-            duration: 1900,
+            x: x+100,
+            duration: 3000,
             yoyo: true,
             repeat: -1,
             ease: 'Linear',
-            delay: 500
+            delay: 1000
         });
 
         }
-
-
-        roach1 = EnemyRoach(0,game,200,400);
-        rat1 = EnemyRat(0,game,20,300);
+        
+        rat1 = EnemyRat(0,game,600,600);
 
         this.snowman.setBounce(0.2);
         this.snowman.setCollideWorldBounds(false);
 
         this.physics.add.collider(this.snowman, this.coffee, function (snowman, coffee) {
-            
-            health += 5
+            snowman.health += 5
             sip.play();
-            healthText.setText('Health: ' + health + '%');
+            healthText.setText('Health: ' + snowman.health + '%');
             coffee.destroy()
 
         });
 		this.physics.add.collider(this.snowman, this.coffee2, function (snowman, coffee2) {
-            
-            health += 5
+            snowman.health += 5
             sip.play();
-            healthText.setText('Health: ' + health + '%');
+            healthText.setText('Health: ' + snowman.health + '%');
             coffee2.destroy()
 
         });
 		this.physics.add.collider(this.snowman, this.coffee3, function (snowman, coffee3) {
-            
-            health += 5
+            snowman.health += 5
             sip.play();
-            healthText.setText('Health: ' + health + '%');
+            healthText.setText('Health: ' + snowman.health + '%');
             coffee3.destroy()
-
-        });
-        this.physics.add.collider(this.snowman, this.coffee4, function (snowman, coffee4) {
-            health += 5
-            health += 5
-            sip.play();
-            healthText.setText('Health: ' + health + '%');
-            coffee4.destroy()
 
         });
 
         this.paper = this.physics.add.staticSprite(750,110,"paper");
-        this.paper.setScale(3)
+        this.paper.setScale(3).refreshBody();
         this.paper.allowGravity = true
 
         this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
-            
-            score += 5
+            snowman.score += 5
             paper_sound.play();
-            scoreText.setText('Score: ' + score);
+            scoreText.setText('Score: ' + snowman.score);
             paper.destroy()
         });
         
 		this.paper2 = this.physics.add.staticSprite(1700,550,"paper");
-        this.paper2.setScale(3)
+        this.paper2.setScale(3).refreshBody();
         this.paper2.allowGravity = true
 
         this.physics.add.collider(this.snowman, this.paper2, function (snowman, paper2) {
-            
-            score += 5
+            snowman.score += 5
             paper_sound.play();
-            scoreText.setText('Score: ' + score);
+            scoreText.setText('Score: ' + snowman.score);
             paper2.destroy()
         });
         
 
         this.paper3 = this.physics.add.staticSprite(3100,150,"paper");
-        this.paper3.setScale(3)
+        this.paper3.setScale(3).refreshBody();
         this.paper3.allowGravity = true
 
         this.physics.add.collider(this.snowman, this.paper3, function (snowman, paper3) {
-            
-            score += 5
+            snowman.score += 5
             paper_sound.play();
-            scoreText.setText('Score: ' + score);
+            scoreText.setText('Score: ' + snowman.score);
             paper3.destroy()
         });        
         
         
-        this.cursors = this.input.keyboard.createCursorKeys();
+            this.cursors = this.input.keyboard.createCursorKeys();
         this.physics.add.collider(this.snowman, platforms);
     //camera
         this.cameras.main.setBounds(0,0,this.background.displayWidth,this.background.displayHeight)
@@ -565,16 +528,12 @@ var SceneB = new Phaser.Class({
 	if (this.cursors.left.isDown)
     {
         this.snowman.setVelocityX(-160);
-        //healthText2.setText(this.snowman.x);
-        //For debugging
 
         this.snowman.anims.play('left', true);
     }
     else if (this.cursors.right.isDown)
     {
         this.snowman.setVelocityX(160);
-        //healthText2.setText(this.snowman.x);
-        //For debugging
 
         this.snowman.anims.play('right', true);
     }
@@ -587,210 +546,11 @@ var SceneB = new Phaser.Class({
     if (this.cursors.up.isDown && this.snowman.body.touching.down)
     {
         this.snowman.setVelocityY(-330);
-        //healthText3.setText(this.snowman.y+14+50-0.25);
-        //***
     }
-	
+		
 	        
 }
 });
-
-var SceneC = new Phaser.Class({
-
-    Extends: Phaser.Scene,
-
-    initialize:
-
-    function SceneC ()
-    {
-        Phaser.Scene.call(this, { key: 'SceneC' });
-    },
-    
-    preload: function preloadScene () {
-        this.load.image('start', 'assets/level3start.png')
-        this.load.image('narrative', 'assets/3narrative.png')
-        this.load.image('Q1', 'assets/3.1.png')
-        this.load.image('Q2', 'assets/3.2.png')
-        this.load.image('Q3', 'assets/3.3.png')
-        this.load.image('Q4_easy', 'assets/3.4(easy).png')
-        this.load.image('Q4_hard', 'assets/3.4(hard).png')
-        this.load.image('Q5_easy', 'assets/3.5(easy).png')
-        this.load.image('Q5_hard', 'assets/3.5(hard).png')
-        this.load.image('end', 'assets/3end.png')
-        this.load.image('lose', 'assets/lose.png')
-        this.load.image('win', 'assets/win.png')
-    },
-    create: function createScene () {
-        this.add.image(600,300,'start') 
-    },
-    
-    update: function updateScene () {
-        if (current_image == 'start') {
-            this.input.keyboard.once('keydown-ENTER', function () {
-                this.add.image(600,300,'Q1');
-                current_image = 'Q1'
-            }, this);
-        }
-
-        if (current_image == 'Q1') {
-            this.input.keyboard.once('keydown-A', function () {
-                this.add.image(600,300,'Q2')
-                score += 1
-                console.log('correct')
-                current_image = 'Q2'
-            }, this);
-            this.input.keyboard.once('keydown-B', function () {
-                current_image = 'Q2'
-                this.add.image(600,300,'Q2')
-            }, this);
-            
-        }
-        if (current_image == 'Q2') {
-            this.input.keyboard.once('keydown-D', function () {
-                this.add.image(600,300,'Q3');
-                current_image = 'Q3'
-            }, this);
-            this.input.keyboard.once('keydown-A', function () {
-                this.add.image(600,300,'Q3');
-                current_image = 'Q3'
-            }, this);
-            this.input.keyboard.once('keydown-B', function () {
-                this.add.image(600,300,'Q3');
-                current_image = 'Q3'
-                score += 1
-                console.log('correct')
-            }, this);
-            this.input.keyboard.once('keydown-C', function () {
-                this.add.image(600,300,'Q3');
-                current_image = 'Q3'
-            }, this);
-        }
-        if (current_image == 'Q3' && cor_ans > 100) {
-            this.input.keyboard.once('keydown-A', function () {
-                this.add.image(600,300,'Q4_hard');
-                current_image = 'Q4'
-                score += 1
-                console.log('correct')
-            }, this);
-            this.input.keyboard.once('keydown-B', function () {
-                this.add.image(600,300,'Q4_hard');
-                current_image = 'Q4'
-            }, this);
-            this.input.keyboard.once('keydown-D', function () {
-                this.add.image(600,300,'Q4_hard');
-                current_image = 'Q4'
-            }, this);
-            this.input.keyboard.once('keydown-C', function () {
-                this.add.image(600,300,'Q4_hard');
-                current_image = 'Q4'
-            }, this);
-        } else if (current_image == 'Q3') {
-            this.input.keyboard.once('keydown-A', function () {
-                this.add.image(600,300,'Q4_easy');
-                current_image = 'Q4'
-                cor_ans += 1
-                console.log('correct')
-            }, this);
-            this.input.keyboard.once('keydown-B', function () {
-                this.add.image(600,300,'Q4_easy');
-                current_image = 'Q4'
-            }, this);
-            this.input.keyboard.once('keydown-D', function () {
-                this.add.image(600,300,'Q4_easy');
-                current_image = 'Q4'
-            }, this);
-            this.input.keyboard.once('keydown-C', function () {
-                this.add.image(600,300,'Q4_easy');
-                current_image = 'Q4'
-            }, this);
-        }
-        if (current_image == 'Q4' && cor_ans > 100) {
-            this.input.keyboard.once('keydown-D', function () {
-                this.add.image(600,300,'Q5_hard');
-                current_image = 'Q5'
-                cor_ans += 1
-                console.log('correct')
-            }, this);
-            this.input.keyboard.once('keydown-B', function () {
-                this.add.image(600,300,'Q5_hard');
-                current_image = 'Q5'
-            }, this);
-            this.input.keyboard.once('keydown-A', function () {
-                this.add.image(600,300,'Q5_hard');
-                current_image = 'Q5'
-            }, this);
-            this.input.keyboard.once('keydown-C', function () {
-                this.add.image(600,300,'Q5_hard');
-                current_image = 'Q5'
-            }, this);
-        } else if (current_image == 'Q4') {
-            this.input.keyboard.once('keydown-A', function () {
-                this.add.image(600,300,'Q5_easy');
-                current_image = 'Q5'
-                cor_ans += 1
-                console.log('correct')
-            }, this);
-            this.input.keyboard.once('keydown-B', function () {
-                this.add.image(600,300,'Q5_easy');
-                current_image = 'Q5'
-            }, this);
-            this.input.keyboard.once('keydown-D', function () {
-                this.add.image(600,300,'Q5_easy');
-                current_image = 'Q5'
-            }, this);
-            this.input.keyboard.once('keydown-C', function () {
-                this.add.image(600,300,'Q5_easy');
-                current_image = 'Q5'
-            }, this);
-        }
-        if (current_image == 'Q5' && cor_ans > 100) {
-            this.input.keyboard.once('keydown-C', function () {
-                this.add.image(600,300,'end');
-                current_image = 'end'
-                cor_ans += 1
-                console.log('correct')
-            }, this);
-            this.input.keyboard.once('keydown-B', function () {
-                this.add.image(600,300,'end');
-                current_image = 'end'
-            }, this);
-            this.input.keyboard.once('keydown-A', function () {
-                this.add.image(600,300,'end');
-                current_image = 'end'
-            }, this);
-            this.input.keyboard.once('keydown-D', function () {
-                this.add.image(600,300,'end');
-                current_image = 'end'
-            }, this);
-        } else if (current_image == 'Q5') {
-            this.input.keyboard.once('keydown-C', function () {
-                this.add.image(600,300,'end');
-                current_image = 'end'
-                cor_ans += 1
-                console.log('correct')
-            }, this);
-            this.input.keyboard.once('keydown-B', function () {
-                this.add.image(600,300,'end');
-                current_image = 'end'
-            }, this);
-            this.input.keyboard.once('keydown-D', function () {
-                this.add.image(600,300,'end');
-                current_image = 'end'
-            }, this);
-            this.input.keyboard.once('keydown-A', function () {
-                this.add.image(600,300,'end');
-                current_image = 'end'
-            }, this);
-        }
-        if (current_image == 'end') {
-            this.input.keyboard.once('keydown-ENTER', function () {
-            this.add.image(600,300,'win');
-        }, this);
-        }
-        
-    },
-});
-
 
 var tutorial_scene = new Phaser.Class({
 
@@ -919,8 +679,6 @@ var narrative_scene = new Phaser.Class({
 
 
 
-
-
 let PhaserConfig = {
     type: Phaser.Auto,
     //parent: "game",
@@ -929,14 +687,14 @@ let PhaserConfig = {
 	physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 400 },
             debug: true
         }
     },
 	resolution: 3,
-    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, SceneC, gameOver_scene]
-
-    
+    //scene: [title_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
+    //scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, gameOver_scene]
+    scene: [SceneA,title_scene, narrative_scene, tutorial_scene,  SceneB, gameOver_scene]
 };
 
 let game = new Phaser.Game(PhaserConfig);
@@ -949,8 +707,6 @@ var gameover = false;
 var rmove = false;
 var ramove = false;
 var music;
-var current_image = 'start';
-var cor_ans = 0;
 var score = 0;
 var health = 50;
 
