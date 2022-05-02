@@ -489,7 +489,7 @@ var SceneB = new Phaser.Class({
         this.paper.allowGravity = true
 
         this.physics.add.collider(this.snowman, this.paper, function (snowman, paper) {
-            snowman.score += 5
+            self.score += 5
             score += 5
             paper_sound.play();
             scoreText.setText('Score: ' + snowman.score);
@@ -642,7 +642,7 @@ var SceneC = new Phaser.Class({
                 current_image = 'Q3'
             }, this);
         }
-        if (current_image == 'Q3' && cor_ans > 100) {
+        if (current_image == 'Q3' && score > 100) {
             this.input.keyboard.once('keydown-A', function () {
                 this.add.image(600,300,'Q4_hard');
                 current_image = 'Q4'
@@ -681,7 +681,7 @@ var SceneC = new Phaser.Class({
                 current_image = 'Q4'
             }, this);
         }
-        if (current_image == 'Q4' && cor_ans > 100) {
+        if (current_image == 'Q4' && score >= 15) {
             this.input.keyboard.once('keydown-D', function () {
                 this.add.image(600,300,'Q5_hard');
                 current_image = 'Q5'
@@ -720,7 +720,7 @@ var SceneC = new Phaser.Class({
                 current_image = 'Q5'
             }, this);
         }
-        if (current_image == 'Q5' && cor_ans > 100) {
+        if (current_image == 'Q5' && score >= 15) {
             this.input.keyboard.once('keydown-C', function () {
                 this.add.image(600,300,'end');
                 current_image = 'end'
@@ -905,7 +905,7 @@ let PhaserConfig = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: true
+            debug: false
         }
     },
 	resolution: 3,
