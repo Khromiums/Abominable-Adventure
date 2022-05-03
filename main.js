@@ -10,7 +10,7 @@ var SceneA = new Phaser.Class({
     },
 
     preload: function preloadScene() {
-        this.load.spritesheet("snowman", "assets/snowman2.png", {frameWidth: 65, frameHeight: 43});
+        this.load.spritesheet("snowman", "assets/snowman5.png", {frameWidth: 1430, frameHeight: 715});
 	    this.load.image("background1", "assets/combined.png");
         this.load.image("coffee", "assets/coffee.png");
 		this.load.image("ground", "assets/ground.png");
@@ -33,10 +33,7 @@ var SceneA = new Phaser.Class({
         //combined background ranges from 1800 to -600
         this.background = this.add.image(3700, 300, "background1");
         //this.background.setScale(3.5);
-        scoreText = this.add.text(16, 16, `Score: ${score}`, { fontSize: '40px', fill: '#0000ff'});
-        healthText = this.add.text(16, 70, `Health: ${health}%`, { fontSize: '40px', fill: '#0000ff' });
-        scoreText.setScrollFactor(0)
-        healthText.setScrollFactor(0)
+        
 		
 		rat_noise = this.sound.add("rat_noise", {loop: false});
         roach_sound = this.sound.add("roach_noise", {loop: false});
@@ -58,22 +55,12 @@ var SceneA = new Phaser.Class({
 		platforms.create(2200, 500, 'ground');
         platforms.create (2200, 700, 'ground');
 		
-		
-        //player
-        this.anims.create({
-            key: "stand",
-            frameRate: 2,
-            frames: this.anims.generateFrameNumbers("snowman", {start: 0, end: 1}),
-            repeat: -1
-        });
 
         this.snowman = this.physics.add.sprite(140,500, "snowman");
-        this.snowman.setScale(2.5).refreshBody();
-        this.snowman.play("stand");
+        this.snowman.setScale(.25).refreshBody();
         this.snowman.health = 50;
         this.snowman.score = 0;
-        this.snowman.body.setSize(25, 27).setOffset(20, 15);
-        //The third and fourth number don't seem to do anything
+        this.snowman.body.setSize(300, 270).setOffset(500, 200);
         
 
         this.coffee = this.physics.add.staticSprite(550,700,"coffee");
@@ -83,8 +70,8 @@ var SceneA = new Phaser.Class({
 		this.coffee2.setScale(3);
 		this.coffee.allowGravity = false;
         
-        this.portal = this.physics.add.staticSprite(2500,630,"portal");
-        //this.portal = this.physics.add.staticSprite(140,630,"portal");
+        //this.portal = this.physics.add.staticSprite(2500,630,"portal");
+        this.portal = this.physics.add.staticSprite(140,630,"portal");
         this.portal.setScale(3);
         this.portal.allowGravity = false
         
@@ -113,7 +100,7 @@ var SceneA = new Phaser.Class({
 
             this.anims.create({
             key: "walk",
-            frameRate: 2,
+            frameRate: 1,
             frames: this.anims.generateFrameNumbers("roach", {start: 0, end: 3}),
             repeat: -1
         });
@@ -122,12 +109,12 @@ var SceneA = new Phaser.Class({
 
         this.tweens.add({
             targets: this.roach,
-            x: x+380,
-            duration: 1900,
+            x: x+400,
+            duration: 2000,
             yoyo: true,
             repeat: -1,
             ease: 'Linear',
-            delay: 500
+            delay: 50
         });
 
         }
@@ -159,20 +146,26 @@ var SceneA = new Phaser.Class({
 
         this.tweens.add({
             targets: this.rat,
-            x: x+380,
-            duration: 1900,
+            x: x+400,
+            duration: 2000,
             yoyo: true,
             repeat: -1,
             ease: 'Linear',
-            delay: 500
+            delay: 50
         });
 
         }
 
 
-        roach1 = EnemyRoach(0,game,200,400);
-        rat1 = EnemyRat(0,game,20,300);
-        rat2 = EnemyRat(0,game,300,150);
+        roach1 = EnemyRoach(0,game,700,630);
+        roach2 = EnemyRoach(0,game,300,370);
+        roach3 = EnemyRoach(0,game,1400,320);
+        roach4 = EnemyRoach(0,game,2000,400);
+        rat1 = EnemyRat(0,game,900,500);
+        rat2 = EnemyRat(0,game,700,230);
+        rat3 = EnemyRat(0,game,0,100);
+        rat4 = EnemyRat(0,game,1500,20);
+        rat5 = EnemyRat(0,game,2000,600);
 		
 
 
@@ -233,11 +226,41 @@ var SceneA = new Phaser.Class({
         this.physics.add.collider(this.snowman, platforms);
     //camera
         this.cameras.main.setBounds(0,0,this.background.displayWidth,this.background.displayHeight)
-        this.cameras.main.startFollow(this.snowman)      
+        this.cameras.main.startFollow(this.snowman)
+        
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('snowman', { start: 1, end: 1 }),
+            frameRate: 10,
+            repeat: 1
+        });
+        
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('snowman', { start: 2, end: 2 }),
+            frameRate: 10,
+            repeat: 1
+        });
+        
+//        healthText2 = this.add.text(16, 120, this.snowman.x, { fontSize: '40px', fill: '#0000ff' });
+//        healthText2.setScrollFactor(0)
+//        healthText3 = this.add.text(16, 160, this.snowman.y, { fontSize: '40px', fill: '#0000ff' });
+//        healthText3.setScrollFactor(0)
+        
+        scoreText = this.add.text(16, 16, `Score: ${score}`, { fontSize: '40px', fill: '#ff0000', fontWeight: 'bold', strokeThickness: 11});
+        healthText = this.add.text(16, 70, `Health: ${health}%`, { fontSize: '40px', fill: '#ff0000', fontWeight: 'bold', strokeThickness: 11});
+        
+        scoreText.setScrollFactor(0)
+        healthText.setScrollFactor(0)
 	
 },
     update: function updateScene() {
-        
+    
+    this.input.keyboard.once('keydown-P', function () {
+        console.log("Hi ");
+        this.scene.pause();
+        this.scene.launch('pause1');    
+    }, this);    
         
 	if (this.snowman.health == 0)
 	{
@@ -250,12 +273,16 @@ var SceneA = new Phaser.Class({
 	if (this.cursors.left.isDown)
     {
         this.snowman.setVelocityX(-160);
+        //healthText2.setText(this.snowman.x);
+        //For debugging
 
         this.snowman.anims.play('left', true);
     }
     else if (this.cursors.right.isDown)
     {
         this.snowman.setVelocityX(160);
+        //healthText2.setText(this.snowman.x);
+        //For debugging
 
         this.snowman.anims.play('right', true);
     }
@@ -268,14 +295,10 @@ var SceneA = new Phaser.Class({
     if (this.cursors.up.isDown && this.snowman.body.touching.down)
     {
         this.snowman.setVelocityY(-330);
+        //healthText3.setText(this.snowman.y+14+50-0.25-23.125);
+        //***
     }
-		
-	//enemy movement
-	//true, move left, false, move right
-	//roach
-
-
-		
+	
 	        
 }
 });
@@ -294,7 +317,7 @@ var SceneB = new Phaser.Class({
     },
 
     preload: function preloadScene() {
-        this.load.spritesheet("snowman", "assets/snowman2.png", {frameWidth: 65, frameHeight: 43});
+        this.load.spritesheet("snowman", "assets/snowman5.png", {frameWidth: 1430, frameHeight: 715});
 	    this.load.image("background2", "assets/citycombined.png");
         this.load.image("coffee", "assets/coffee.png");
 		this.load.image("ground", "assets/ground.png");
@@ -317,11 +340,7 @@ var SceneB = new Phaser.Class({
         //combined background ranges from 1800 to -600
         this.background = this.add.image(3700, 300, "background2");
         //this.background.setScale(3.5);
-        scoreText = this.add.text(16, 16, `Score: ${score}`, { fontSize: '40px', fill: '#0000ff'});
-        healthText = this.add.text(16, 70, `Health: ${health}%`, { fontSize: '40px', fill: '#0000ff' });
         
-        scoreText.setScrollFactor(0)
-        healthText.setScrollFactor(0)
 		
 		rat_noise = this.sound.add("rat_noise", {loop: false});
         roach_sound = this.sound.add("roach_noise", {loop: false});
@@ -345,23 +364,17 @@ var SceneB = new Phaser.Class({
 		platforms.create(2650, 300, 'ground');
         platforms.create(2850, 600, 'ground');
         platforms.create(3000, 450, 'ground');
+        
+        
 				
-		
-        //player
-        this.anims.create({
-            key: "stand",
-            frameRate: 2,
-            frames: this.anims.generateFrameNumbers("snowman", {start: 0, end: 1}),
-            repeat: -1
-        });
+
 
         this.snowman = this.physics.add.sprite(140,500, "snowman");
-        this.snowman.setScale(2.5).refreshBody();
-        this.snowman.play("stand");
+        this.snowman.setScale(.25).refreshBody();
         this.snowman.health = 50;
         this.snowman.score = 0;
-        this.snowman.body.setSize(25, 27).setOffset(20, 15);
-        //The third and fourth number don't seem to do anything
+        this.snowman.body.setSize(300, 270).setOffset(500, 200);
+
         
 
         this.coffee = this.physics.add.staticSprite(600,450,"coffee");
@@ -390,7 +403,7 @@ var SceneB = new Phaser.Class({
 //        healthText2.setScrollFactor(0)
 //        healthText3 = this.add.text(16, 160, this.snowman.y, { fontSize: '40px', fill: '#0000ff' });
 //        healthText3.setScrollFactor(0)
-        //This is for debugging
+        
         
         EnemyRoach = (index,game,x,y) =>{
 
@@ -410,7 +423,7 @@ var SceneB = new Phaser.Class({
 
             this.anims.create({
             key: "walk",
-            frameRate: 2,
+            frameRate: 1,
             frames: this.anims.generateFrameNumbers("roach", {start: 0, end: 3}),
             repeat: -1
         });
@@ -419,12 +432,12 @@ var SceneB = new Phaser.Class({
 
         this.tweens.add({
             targets: this.roach,
-            x: x+380,
-            duration: 1900,
+            x: x+400,
+            duration: 2000,
             yoyo: true,
             repeat: -1,
             ease: 'Linear',
-            delay: 500
+            delay: 50
         });
 
         }
@@ -447,7 +460,7 @@ var SceneB = new Phaser.Class({
 
             this.anims.create({
             key: "walkRat",
-            frameRate: 2,
+            frameRate: 1,
             frames: this.anims.generateFrameNumbers("rat", {start: 0, end: 3}),
             repeat: -1
         });
@@ -456,19 +469,29 @@ var SceneB = new Phaser.Class({
 
         this.tweens.add({
             targets: this.rat,
-            x: x+380,
-            duration: 1900,
+            x: x+400,
+            duration: 2000,
             yoyo: true,
             repeat: -1,
             ease: 'Linear',
-            delay: 500
+            delay: 50
         });
 
         }
 
 
-        roach1 = EnemyRoach(0,game,200,400);
-        rat1 = EnemyRat(0,game,20,300);
+        roach1 = EnemyRoach(0,game,400,400);
+        roach2 = EnemyRoach(0,game,400,0);
+        roach3 = EnemyRoach(0,game,1600,300);
+        roach4 = EnemyRoach(0,game,1800,300);
+        roach5 = EnemyRoach(0,game,2650,500);
+        roach5 = EnemyRoach(0,game,2450,200);
+        rat1 = EnemyRat(0,game,0,200);
+        rat2 = EnemyRat(0,game,700,280);
+        rat3 = EnemyRat(0,game,1100,100);
+        rat4 = EnemyRat(0,game,1350,500);
+        rat5 = EnemyRat(0,game,2300,600);
+        rat6 = EnemyRat(0,game,2840,400);
 
         this.snowman.setBounce(0.2);
         this.snowman.setCollideWorldBounds(false);
@@ -550,10 +573,37 @@ var SceneB = new Phaser.Class({
         this.cameras.main.setBounds(0,0,this.background.displayWidth,this.background.displayHeight)
         this.cameras.main.startFollow(this.snowman)
         
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('snowman', { start: 1, end: 1 }),
+            frameRate: 10,
+            repeat: 1
+        });
+        
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('snowman', { start: 2, end: 2 }),
+            frameRate: 10,
+            repeat: 1
+        });
+        
+        scoreText = this.add.text(16, 16, `Score: ${score}`, { fontSize: '40px', fill: '#ff0000', fontWeight: 'bold', strokeThickness: 11});
+        healthText = this.add.text(16, 70, `Health: ${health}%`, { fontSize: '40px', fill: '#ff0000', fontWeight: 'bold', strokeThickness: 11});
+        
+        scoreText.setScrollFactor(0)
+        healthText.setScrollFactor(0)
+        
         
 	
 },
     update: function updateScene() {
+        
+    this.input.keyboard.once('keydown-P', function () {
+        console.log("Hi");
+        this.scene.pause();
+        this.scene.launch('pause2');    
+    }, this);     
+    
 	if (this.snowman.health == 0)
 	{
 		this.scene.start('gameOver_scene');
@@ -566,7 +616,7 @@ var SceneB = new Phaser.Class({
     {
         this.snowman.setVelocityX(-160);
         //healthText2.setText(this.snowman.x);
-        //For debugging
+
 
         this.snowman.anims.play('left', true);
     }
@@ -574,7 +624,7 @@ var SceneB = new Phaser.Class({
     {
         this.snowman.setVelocityX(160);
         //healthText2.setText(this.snowman.x);
-        //For debugging
+
 
         this.snowman.anims.play('right', true);
     }
@@ -587,8 +637,8 @@ var SceneB = new Phaser.Class({
     if (this.cursors.up.isDown && this.snowman.body.touching.down)
     {
         this.snowman.setVelocityY(-330);
-        //healthText3.setText(this.snowman.y+14+50-0.25);
-        //***
+        //healthText3.setText(this.snowman.y+14+50-0.25-23.125);
+        
     }
 	
 	        
@@ -918,6 +968,73 @@ var narrative_scene = new Phaser.Class({
 });
 
 
+var PauseScene1 = new Phaser.Class({
+
+    Extends: Phaser.Scene,
+
+    initialize:
+    
+    function PauseScene1 ()
+    {
+        Phaser.Scene.call(this, { key: 'pause1' });
+    },
+
+    preload: function preloadScene () {
+        this.load.image('narrative', 'assets/narrative.png');
+        
+    },
+    create: function createScene () {
+        this.background = this.add.image(600, 300, "narrative");
+        this.input.keyboard.once('keydown-P', function () {
+            this.scene.resume('SceneA');
+            this.scene.stop();
+        }, this);
+
+
+
+    },
+	update: function updateScene () {
+		this.sound.stopAll();
+	}
+
+    
+});
+
+
+
+var PauseScene2 = new Phaser.Class({
+
+    Extends: Phaser.Scene,
+
+    initialize:
+    
+    function PauseScene2 ()
+    {
+        Phaser.Scene.call(this, { key: 'pause2' });
+    },
+
+    preload: function preloadScene () {
+        this.load.image('narrative', 'assets/narrative.png');
+        
+    },
+    create: function createScene () {
+        this.background = this.add.image(600, 300, "narrative");
+        this.input.keyboard.once('keydown-P', function () {
+            this.scene.resume('SceneB');
+            this.scene.stop();
+        }, this);
+
+
+
+    },
+	update: function updateScene () {
+		this.sound.stopAll();
+	}
+
+    
+});
+
+
 
 
 
@@ -934,7 +1051,7 @@ let PhaserConfig = {
         }
     },
 	resolution: 3,
-    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, SceneC, gameOver_scene]
+    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, SceneC, gameOver_scene, PauseScene1, PauseScene2]
 
     
 };
