@@ -980,11 +980,11 @@ var PauseScene1 = new Phaser.Class({
     },
 
     preload: function preloadScene () {
-        this.load.image('narrative', 'assets/narrative.png');
+        this.load.image('pause', 'assets/pause.png');
         
     },
     create: function createScene () {
-        this.background = this.add.image(600, 300, "narrative");
+        this.background = this.add.image(600, 300, "pause");
         this.input.keyboard.once('keydown-P', function () {
             this.scene.resume('SceneA');
             this.scene.stop();
@@ -1014,11 +1014,11 @@ var PauseScene2 = new Phaser.Class({
     },
 
     preload: function preloadScene () {
-        this.load.image('narrative', 'assets/narrative.png');
+        this.load.image('pause2', 'assets/pause.png');
         
     },
     create: function createScene () {
-        this.background = this.add.image(600, 300, "narrative");
+        this.background = this.add.image(600, 300, "pause2");
         this.input.keyboard.once('keydown-P', function () {
             this.scene.resume('SceneB');
             this.scene.stop();
@@ -1031,6 +1031,38 @@ var PauseScene2 = new Phaser.Class({
 		this.sound.stopAll();
 	}
 
+    
+});
+
+var CreditsScene = new Phaser.Class({
+
+    Extends: Phaser.Scene,
+
+    initialize:
+    
+    function CreditsScene ()
+    {
+        Phaser.Scene.call(this, { key: 'credits' });
+    },
+
+    preload: function preloadScene () {
+        this.load.image('credits', 'assets/credits.png');
+        
+    },
+	
+    create: function createScene () {
+        this.background = this.add.image(600, 300, "credits");
+	    this.cursors = this.input.keyboard.createCursorKeys();
+		// can skip to game
+        this.input.keyboard.once('keydown-ENTER', function () {
+            this.scene.stop();
+        },
+		this);
+
+    },
+	update: function updateScene () {
+		this.sound.stopAll();
+	}
     
 });
 
@@ -1051,7 +1083,7 @@ let PhaserConfig = {
         }
     },
 	resolution: 3,
-    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, SceneC, gameOver_scene, PauseScene1, PauseScene2]
+    scene: [title_scene, narrative_scene, tutorial_scene, SceneA, SceneB, SceneC, gameOver_scene, PauseScene1, PauseScene2, CreditsScene]
 
     
 };
