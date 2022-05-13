@@ -836,14 +836,25 @@ var SceneC = new Phaser.Class({
             if (cor_ans > 300) {
                 this.input.keyboard.once('keydown-ENTER', function () {
                 this.add.image(600,300,'win');
+                current_image = 'boo'
                 }, this);
             } else {
                 this.input.keyboard.once('keydown-ENTER', function () {
                 this.add.image(600,300,'lose');
+                current_image = 'boo'
                 }, this);
             }
             
+        } 
+        if (current_image == 'boo') {
+            
+            this.input.keyboard.once('keydown-ENTER', function () {
+            this.scene.start('credits')
+            }, this);
         }
+                
+        
+        
         
     },
 });
@@ -958,7 +969,7 @@ var narrative_scene = new Phaser.Class({
 	    this.cursors = this.input.keyboard.createCursorKeys();
 		// can skip to game
         this.input.keyboard.once('keydown-ENTER', function () {
-            this.scene.start('SceneA');
+            this.scene.start('SceneC');
         }, this);
 		// or go to tutorial 
 		this.input.keyboard.once('keydown-SPACE', function () {
