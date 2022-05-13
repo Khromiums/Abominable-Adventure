@@ -685,7 +685,7 @@ var SceneC = new Phaser.Class({
         if (current_image == 'Q1') {
             this.input.keyboard.once('keydown-A', function () {
                 this.add.image(600,300,'Q2')
-                score += 1
+                cor_ans += 1
                 console.log('correct')
                 current_image = 'Q2'
             }, this);
@@ -707,7 +707,7 @@ var SceneC = new Phaser.Class({
             this.input.keyboard.once('keydown-B', function () {
                 this.add.image(600,300,'Q3');
                 current_image = 'Q3'
-                score += 1
+                cor_ans += 1
                 console.log('correct')
             }, this);
             this.input.keyboard.once('keydown-C', function () {
@@ -715,7 +715,7 @@ var SceneC = new Phaser.Class({
                 current_image = 'Q3'
             }, this);
         }
-        if (current_image == 'Q3' && cor_ans > 100) {
+        if (current_image == 'Q3' && score > 15) {
             this.input.keyboard.once('keydown-A', function () {
                 this.add.image(600,300,'Q4_hard');
                 current_image = 'Q4'
@@ -754,7 +754,7 @@ var SceneC = new Phaser.Class({
                 current_image = 'Q4'
             }, this);
         }
-        if (current_image == 'Q4' && cor_ans > 100) {
+        if (current_image == 'Q4' && score > 15) {
             this.input.keyboard.once('keydown-D', function () {
                 this.add.image(600,300,'Q5_hard');
                 current_image = 'Q5'
@@ -793,7 +793,7 @@ var SceneC = new Phaser.Class({
                 current_image = 'Q5'
             }, this);
         }
-        if (current_image == 'Q5' && cor_ans > 100) {
+        if (current_image == 'Q5' && score > 15) {
             this.input.keyboard.once('keydown-C', function () {
                 this.add.image(600,300,'end');
                 current_image = 'end'
@@ -833,9 +833,16 @@ var SceneC = new Phaser.Class({
             }, this);
         }
         if (current_image == 'end') {
-            this.input.keyboard.once('keydown-ENTER', function () {
-            this.add.image(600,300,'win');
-        }, this);
+            if (cor_ans > 300) {
+                this.input.keyboard.once('keydown-ENTER', function () {
+                this.add.image(600,300,'win');
+                }, this);
+            } else {
+                this.input.keyboard.once('keydown-ENTER', function () {
+                this.add.image(600,300,'lose');
+                }, this);
+            }
+            
         }
         
     },
